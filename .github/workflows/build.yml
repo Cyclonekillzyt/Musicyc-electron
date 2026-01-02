@@ -42,10 +42,10 @@ jobs:
 
       - name: Build Electron App
         run: npm run build
-        working-directory: Desktop/electron
+        working-directory: electron
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: musicyc-${{ matrix.os }}
-          path: Desktop/electron/dist_electron/*
+          path: electron/dist_electron/*
