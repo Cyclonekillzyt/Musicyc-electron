@@ -25,7 +25,7 @@ jobs:
 
       - name: Install Electron dependencies
         run: npm ci
-        working-directory: Desktop/electron
+        working-directory: electron
 
       - name: Install Frontend dependencies
         run: npm ci
