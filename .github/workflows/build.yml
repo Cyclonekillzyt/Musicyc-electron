@@ -17,11 +17,16 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
+      
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
+
+      - name: Install Electron dependencies
+        run: npm install
+        working-directory: electron
 
       - name: Install Electron dependencies
         run: npm ci
