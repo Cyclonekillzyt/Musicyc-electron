@@ -6,11 +6,8 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const downloadTrack = (url, outputDir) => {
+export const downloadTrack = (url, outputDir, ytdlpPath) => {
   return new Promise((resolve, reject) => {
-
-
-    const ytDlpPath = path.join(__dirname, "bin", "yt-dlp_linux");
 
     const args = [
       "-x",

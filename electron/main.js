@@ -85,7 +85,7 @@ if (!fs.existsSync(outputPath)) fs.mkdirSync(outputPath, { recursive: true });
 if (!fs.existsSync(cache)) fs.mkdirSync(cache, { recursive: true });
 
 ipcMain.handle("download-track", async (_, url) => {
-  return await downloadTrack(url, outputPath);
+  return await downloadTrack(url, outputPath, ytDlpPath);
 });
 
 ipcMain.handle("search-youtube", async (_, query) => {
