@@ -2,10 +2,11 @@ name: Build Electron App
 
 on:
   push:
-    branches: [main]
-  release:
-    types: [published]
+    tags:
+      - "v*"
 
+permissions:
+  contents: write
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -47,6 +48,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            dist/**/*.{exe,dmg,AppImage}
+            electron/dist_electron/**/*.{exe,dmg,AppImage}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
