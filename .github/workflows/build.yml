@@ -49,6 +49,7 @@ jobs:
         with:
           files: |
             electron/dist_electron/**/Musicyc*.Setup*.exe
+             electron/dist_electron/**/Musicyc*.exe
             electron/dist_electron/**/Musicyc*.dmg
             electron/dist_electron/**/Musicyc*.AppImage
         env:
