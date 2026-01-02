@@ -40,7 +40,7 @@ jobs:
         working-directory: Desktop/electron
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: musicyc-${{ matrix.os }}
           path: Desktop/electron/dist_electron/*
