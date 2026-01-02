@@ -1,9 +1,14 @@
 {
   "name": "musicyc",
   "version": "1.0.0",
-  "description": "",
+  "description": "A free music streaming and downloading app",
   "main": "main.js",
   "type": "module",
+  "homepage": "https://github.com/Cyclonekillzyt/Musicyc-electron.git",
+  "author": {
+    "name": "Cyclone Kendricks",
+    "email": "kendrickscyclone@gmail.com"
+  },
   "scripts": {
     "start": "electron .",
     "build": "electron-builder"
@@ -11,7 +16,6 @@
   "build": {
     "appId": "com.example.musicyc",
     "productName": "Musicyc",
-    "asar": true,
     "directories": {
       "buildResources": "assets",
       "output": "dist_electron"
@@ -51,11 +55,8 @@
       ]
     }
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
-    "electron": "^39.2.7",
+    "electron": "^26.2.0",
     "electron-builder": "^24.6.0"
   },
   "dependencies": {
