@@ -48,6 +48,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            electron/dist_electron/**/*.{exe,dmg,AppImage}
+            electron/dist_electron/**/Musicyc*.Setup*.exe
+            electron/dist_electron/**/Musicyc*.dmg
+            electron/dist_electron/**/Musicyc*.AppImage
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
