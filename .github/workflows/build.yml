@@ -2,7 +2,7 @@ name: Build Electron App
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   release:
     types: [published]
 
@@ -17,14 +17,13 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
-      
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Install Electron dependencies
+      - name: Install Node dependencies
         run: npm install
         working-directory: electron
 
@@ -44,8 +43,10 @@ jobs:
         run: npm run build
         working-directory: electron
 
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+      - name: Upload binaries to GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: musicyc-${{ matrix.os }}
-          path: electron/dist_electron/*
+          files: |
+            dist/**/*.{exe,dmg,AppImage}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
