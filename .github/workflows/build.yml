@@ -1,0 +1,46 @@
+name: Build Electron App
+
+on:
+  push:
+    branches: [ main ]
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [20]
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install Electron dependencies
+        run: npm ci
+        working-directory: Desktop/electron
+
+      - name: Install Frontend dependencies
+        run: npm ci
+        working-directory: Frontend
+
+      - name: Build Frontend
+        run: npm run build
+        working-directory: Frontend
+
+      - name: Build Electron App
+        run: npm run build
+        working-directory: Desktop/electron
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: musicyc-${{ matrix.os }}
+          path: Desktop/electron/dist_electron/*
