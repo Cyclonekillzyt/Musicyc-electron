@@ -18,7 +18,7 @@ export const downloadTrack = (url, outputDir, ytdlpPath) => {
       url,
     ];
 
-    const process = spawn(ytDlpPath, args);
+    const process = spawn(ytdlpPath, args);
 
     process.stdout.on("data", (data) => {
       console.log(data.toString());

@@ -6,7 +6,6 @@ import { ipcMain } from "electron";
 import { downloadTrack } from "./download.js";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
-dotenv.config();
 import { searchYouTube } from "./search.js";
 import { startServer } from "./server.js";
 import os from "os";
@@ -17,16 +16,40 @@ const __dirname = path.dirname(__filename);
 function getYtDlpPath() {
   const platform = os.platform();
 
-  if (platform === "win32") return path.join(__dirname, "bin", "yt-dlp.exe");
-  if (platform === "darwin") return path.join(__dirname, "bin", "yt-dlp_macos");
-  return path.join(__dirname, "bin", "yt-dlp_linux");
+  if (app.isPackaged) {
+    return path.join(
+      process.resourcesPath,
+      "bin",
+      platform === "win32"
+        ? "yt-dlp.exe"
+        : platform === "darwin"
+        ? "yt-dlp_macos"
+        : "yt-dlp_linux"
+    );
+  } else {
+    return path.join(
+      __dirname,
+      "bin",
+      platform === "win32"
+        ? "yt-dlp.exe"
+        : platform === "darwin"
+        ? "yt-dlp_macos"
+        : "yt-dlp_linux"
+    );
+  }
 }
+
 
 const ytDlpPath = getYtDlpPath();
 
 let win;
 let frontend;
 let server;
+
+const envPath = path.join(__dirname, ".env");
+
+
+dotenv.config({path: envPath});
 
 function createWindow() {
   win = new BrowserWindow({
@@ -38,24 +61,27 @@ function createWindow() {
       contextIsolation: true,
     },
   });
-}
+  const isProd = app.isPackaged;
 
-const buildPath = path.join(__dirname, "../Frontend/dist/index.html");
-if (fs.existsSync(buildPath)) {
-  win.loadFile(buildPath);
-} else {
-  frontend = spawn("npm", ["run", "dev"], {
-    cwd: path.join(__dirname, "../Frontend"),
-  });
+  const buildPath = isProd
+    ? path.join(process.resourcesPath, "frontend/dist/index.html")
+    : path.join(__dirname, "../Frontend/dist/index.html");
 
-  frontend.stdout.on("data", (data) => {
-    process.stdout.write(`Frontend: ${data}`);
-    const str = data.toString();
-    if (str.includes("ready")) {
-      win.loadURL("http://localhost:5173");
-    }
-  });
+  if (!isProd && !fs.existsSync(buildPath)) {
+    frontend = spawn("npm", ["run", "dev"], {
+      cwd: path.join(__dirname, "../Frontend"),
+    });
 
+    frontend.stdout.on("data", (data) => {
+      process.stdout.write(`Frontend: ${data}`);
+      const str = data.toString();
+      if (str.includes("ready")) {
+        win.loadURL("http://localhost:5173");
+      }
+    });
+  } else {
+    win.loadFile(buildPath);
+  }
 }
 
 app.whenReady().then(() => {
@@ -68,13 +94,11 @@ app.on("window-all-closed", () => {
     if (frontend) frontend.kill();
     app.quit();
   }
-   if (server) server.close();
-   if (process.platform !== "darwin") {
-     app.quit();
-   }
+  if (server) server.close();
+  if (process.platform !== "darwin") {
+    app.quit();
+  }
 });
-
-
 
 const baseDir = app.getPath("music");
 

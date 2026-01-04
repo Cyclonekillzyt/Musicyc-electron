@@ -1,6 +1,15 @@
 import { spawn } from "child_process";
+import fs from "fs";
+
+
+
 
 export function streamAudio(req, res, ytdlpPath) {
+
+  if (!fs.existsSync(ytdlpPath)) {
+    console.error("YTDLP binary not found at:", ytdlpPath);
+  }
+  
   const { videoId } = req.query;
 
   res.writeHead(200, {

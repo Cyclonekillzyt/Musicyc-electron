@@ -29,12 +29,18 @@
       "download.js",
       "stream.js",
       "search.js",
-      "bin/**/*",
-      "../../frontend/dist/**/*",
-      "logic/**/*"
+      "logic/**/*",
+      ".env"
     ],
     "extraResources": [
-      "bin/**/*"
+      {
+        "from": "bin",
+        "to": "bin"
+      },
+      {
+        "from": "../Frontend/dist",
+        "to": "frontend/dist"
+      }
     ],
     "mac": {
       "target": [

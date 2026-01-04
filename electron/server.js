@@ -21,5 +21,13 @@ export function startServer(ytDlpPath, port = 3333) {
   server.listen(port, () =>
     console.log(`Server running on http://localhost:${port}`)
   );
+
+  server.on("error", (err) => {
+    if (err.code === "EADDRINUSE") {
+      console.warn(`Port: ${port} in use , trying port ${port + 1}...`);
+      startServer(ytDlpPath, port + 1);
+    } else {
+      console.error("Server error:", err);    }
+  });
   return server;
 }
