@@ -1,14 +1,13 @@
 import { DownloadIcon } from "lucide-react";
 import { usePlayer } from "../context/PlayerContext";
-import { useNavigate } from "react-router-dom";
+import { handleDownload } from "./Download.jsx";
 
 const Description = ({ info }) => {
-  const navigate = useNavigate();
   const { setDownload } = usePlayer();
   const handleClick = () => {
     if (!info) return;
     setDownload(info);
-    navigate("/download");
+    handleDownload(info);
   };
   return (
     <div className="card py-4 flex justify-center items-center  text-center gap-2">

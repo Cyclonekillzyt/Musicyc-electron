@@ -10,7 +10,6 @@ const SearchPage = () => {
     console.log("Searching for:", searchQuery);
     
     try {
-      console.log("electronAPI:", window.electronAPI);
       const data =  await window.electronAPI.searchYoutube(searchQuery);
       setResults(data);
     } catch (error) {

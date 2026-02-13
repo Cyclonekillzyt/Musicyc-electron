@@ -3,15 +3,16 @@ import Description from "../components/Description";
 import Header from "../components/Header";
 import Thumb from "../components/Thumb";
 import { usePlayer } from "../context/PlayerContext";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 const MusicPlayer = () => {
   const { currentTrack, playAudio } = usePlayer();
   const thumb = currentTrack?.thumbnails?.high?.url ?? null;
   
+  console.log(`currentTrack ${currentTrack}`, [currentTrack], {currentTrack});
    useEffect(() => {
     if (!currentTrack) return;
-    playAudio(currentTrack.videoId);
+    playAudio(currentTrack);
   }, [currentTrack]);
 
 

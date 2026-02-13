@@ -12,11 +12,10 @@ export const PlayerProvider = ({ children }) => {
   const [audioSize, setAudioSize] = useState(0);
   const [playedTime, setPlayedTime] = useState("0:00");
   const [seeking, setSeeking] = useState(false);
-
+  const [pageNumber, setPageNumber] = useState(1);
 
   useEffect(() => {
     const audio = audioRef.current;
-    
 
     const updateProgress = () => {
       if (!seeking) {
@@ -32,20 +31,25 @@ export const PlayerProvider = ({ children }) => {
       }
     };
     audio.addEventListener("timeupdate", updateProgress);
-    
+
     return () => audio.removeEventListener("timeupdate", updateProgress);
-
-
   }, [seeking]);
-  async function playAudio(trackId) {
+  async function playAudio(track) {
+    console.log(track)
     const audio = audioRef.current;
 
-    if (audio.src.includes(trackId) && !audio.paused) {
+    if (audio.src.includes(track) && !audio.paused) {
       return;
     }
 
     audio.pause();
-    audio.src = `http://localhost:3333/stream?videoId=${trackId}`;
+    if (track.source === "stream") {
+      audio.src = `http://localhost:3333/stream?videoId=${track.videoId}`;
+    }
+
+    if (track.source === "local") {
+      audio.src = `file://${track.path}`;
+    }
     audio.load();
 
     try {
@@ -56,6 +60,13 @@ export const PlayerProvider = ({ children }) => {
     }
   }
 
+  useEffect(() => {
+    async function fetchPlaylist() {
+      const playlists = await window.electronAPI.getPlaylist();
+      setPlaylist(playlists);
+    }
+    fetchPlaylist();
+  }, []);
 
   return (
     <PlayerContext.Provider
@@ -76,7 +87,10 @@ export const PlayerProvider = ({ children }) => {
         setAudioSize,
         playedTime,
         setPlayedTime,
-        seeking, setSeeking
+        seeking,
+        setSeeking,
+        pageNumber,
+        setPageNumber,
       }}
     >
       {children}
