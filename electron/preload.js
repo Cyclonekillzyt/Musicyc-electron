@@ -6,4 +6,5 @@ contextBridge.exposeInMainWorld("electronAPI", {
   onMessage: (callback) => ipcRenderer.on("message", callback),
   downloadTrack: (url) => ipcRenderer.invoke("download-track", url),
   searchYoutube: (query) => ipcRenderer.invoke("search-youtube", query),
+  getPlaylist: () => ipcRenderer.invoke("current-download"),
 });

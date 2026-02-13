@@ -16,10 +16,14 @@ export function startServer(ytDlpPath, port = 3333) {
       return res.end("Bad Request: Missing videoId");
     }
 
-    streamAudio(req, res, ytDlpPath);
+    streamAudio(req, res, ytDlpPath).catch((err) => {
+      console.error(err);
+      res.writeHead(500);
+      res.end("Server Error");
+    });
   });
   server.listen(port, () =>
-    console.log(`Server running on http://localhost:${port}`)
+    console.log(`Server running on http://localhost:${port}`),
   );
 
   server.on("error", (err) => {
@@ -27,7 +31,8 @@ export function startServer(ytDlpPath, port = 3333) {
       console.warn(`Port: ${port} in use , trying port ${port + 1}...`);
       startServer(ytDlpPath, port + 1);
     } else {
-      console.error("Server error:", err);    }
+      console.error("Server error:", err);
+    }
   });
   return server;
 }

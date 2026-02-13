@@ -1,5 +1,5 @@
 import { app, BrowserWindow } from "electron";
-import path from "path";
+import path, { resolve } from "path";
 import fs from "fs";
 import { spawn } from "child_process";
 import { ipcMain } from "electron";
@@ -8,11 +8,14 @@ import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import { searchYouTube } from "./search.js";
 import { startServer } from "./server.js";
+import { downloads } from "./logic/playlist.js";
 import os from "os";
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+export const tempDir = path.join(__dirname, "temp");
 function getYtDlpPath() {
   const platform = os.platform();
 
@@ -23,8 +26,8 @@ function getYtDlpPath() {
       platform === "win32"
         ? "yt-dlp.exe"
         : platform === "darwin"
-        ? "yt-dlp_macos"
-        : "yt-dlp_linux"
+          ? "yt-dlp_macos"
+          : "yt-dlp_linux",
     );
   } else {
     return path.join(
@@ -33,14 +36,31 @@ function getYtDlpPath() {
       platform === "win32"
         ? "yt-dlp.exe"
         : platform === "darwin"
-        ? "yt-dlp_macos"
-        : "yt-dlp_linux"
+          ? "yt-dlp_macos"
+          : "yt-dlp_linux",
     );
   }
 }
 
-
 const ytDlpPath = getYtDlpPath();
+const checkForUpdates = async () => {
+  return new Promise((resolve, reject) => {
+     const process = spawn(ytDlpPath, ["-U"]);
+     process.stdout.on("data", (data) => {
+       console.log(data.toString());
+     });
+      process.stderr.on("data", (data) => {
+        console.error(data.toString());
+      });
+
+      process.on("error", reject);
+
+      process.on("close", (code) => {
+        resolve(code);
+      });
+  })
+};
+
 
 let win;
 let frontend;
@@ -48,8 +68,7 @@ let server;
 
 const envPath = path.join(__dirname, ".env");
 
-
-dotenv.config({path: envPath});
+dotenv.config({ path: envPath });
 
 function createWindow() {
   win = new BrowserWindow({
@@ -84,8 +103,9 @@ function createWindow() {
   }
 }
 
-app.whenReady().then(() => {
+app.whenReady().then( async() => {
   createWindow();
+  await checkForUpdates();
   server = startServer(ytDlpPath);
 });
 
@@ -107,6 +127,9 @@ const cache = path.join(baseDir, ".cache");
 
 if (!fs.existsSync(outputPath)) fs.mkdirSync(outputPath, { recursive: true });
 if (!fs.existsSync(cache)) fs.mkdirSync(cache, { recursive: true });
+if (!fs.existsSync(tempDir)) {
+  fs.mkdirSync(tempDir, { recursive: true });
+}
 
 ipcMain.handle("download-track", async (_, url) => {
   return await downloadTrack(url, outputPath, ytDlpPath);
@@ -119,4 +142,8 @@ ipcMain.handle("search-youtube", async (_, query) => {
     console.error(err);
     throw err;
   }
+});
+
+ipcMain.handle("current-download", async (_) => {
+  return await downloads(outputPath);
 });

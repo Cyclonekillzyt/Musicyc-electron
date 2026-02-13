@@ -1,21 +1,30 @@
 import { spawn } from "child_process";
-import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
+import { tempDir } from "./main.js";
+import fs from "fs";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const sanitizeFileName = (name) =>
+  name.replace(/[<>:"/\\|?*\x00-\x1F]/g, "").trim();
 
 export const downloadTrack = (url, outputDir, ytdlpPath) => {
-  return new Promise((resolve, reject) => {
+  const videoId = url?.id;
+  const checkFile = `${videoId}.opus`;
+  const checkFilePath = path.join(tempDir, checkFile);
 
+  if (fs.existsSync(checkFilePath)) {
+    const safeTitle = sanitizeFileName(url.title || videoId);
+    const finalFileName = `${safeTitle}.mp3`;
+    const outputFilePath = path.join(outputDir, finalFileName);
+    return fs.copyFileSync(checkFilePath, outputFilePath);
+  }
+  return new Promise((resolve, reject) => {
     const args = [
       "-x",
       "--audio-format",
       "best",
       "-o",
       path.join(outputDir, "%(title)s.%(ext)s"),
-      url,
+      `https://www.youtube.com/watch?v=${videoId}`,
     ];
 
     const process = spawn(ytdlpPath, args);
