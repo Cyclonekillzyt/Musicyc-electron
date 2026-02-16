@@ -1,5 +1,5 @@
 import { app, BrowserWindow } from "electron";
-import path, { resolve } from "path";
+import path from "path";
 import fs from "fs";
 import { spawn } from "child_process";
 import { ipcMain } from "electron";
@@ -11,11 +11,9 @@ import { startServer } from "./server.js";
 import { downloads } from "./logic/playlist.js";
 import os from "os";
 
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const tempDir = path.join(__dirname, "temp");
 function getYtDlpPath() {
   const platform = os.platform();
 
@@ -45,22 +43,21 @@ function getYtDlpPath() {
 const ytDlpPath = getYtDlpPath();
 const checkForUpdates = async () => {
   return new Promise((resolve, reject) => {
-     const process = spawn(ytDlpPath, ["-U"]);
-     process.stdout.on("data", (data) => {
-       console.log(data.toString());
-     });
-      process.stderr.on("data", (data) => {
-        console.error(data.toString());
-      });
+    const process = spawn(ytDlpPath, ["-U"]);
+    process.stdout.on("data", (data) => {
+      console.log(data.toString());
+    });
+    process.stderr.on("data", (data) => {
+      console.error(data.toString());
+    });
 
-      process.on("error", reject);
+    process.on("error", reject);
 
-      process.on("close", (code) => {
-        resolve(code);
-      });
-  })
+    process.on("close", (code) => {
+      resolve(code);
+    });
+  });
 };
-
 
 let win;
 let frontend;
@@ -103,10 +100,12 @@ function createWindow() {
   }
 }
 
-app.whenReady().then( async() => {
+app.whenReady().then(async () => {
   createWindow();
   await checkForUpdates();
   server = startServer(ytDlpPath);
+  const files = fs.readdirSync(tempDir);
+  console.log(files)
 });
 
 app.on("window-all-closed", () => {
@@ -123,10 +122,9 @@ app.on("window-all-closed", () => {
 const baseDir = app.getPath("music");
 
 const outputPath = path.join(baseDir, "Musicyc");
-const cache = path.join(baseDir, ".cache");
 
 if (!fs.existsSync(outputPath)) fs.mkdirSync(outputPath, { recursive: true });
-if (!fs.existsSync(cache)) fs.mkdirSync(cache, { recursive: true });
+export const tempDir = path.join(outputPath, ".cache");
 if (!fs.existsSync(tempDir)) {
   fs.mkdirSync(tempDir, { recursive: true });
 }
@@ -147,3 +145,4 @@ ipcMain.handle("search-youtube", async (_, query) => {
 ipcMain.handle("current-download", async (_) => {
   return await downloads(outputPath);
 });
+

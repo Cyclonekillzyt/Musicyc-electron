@@ -8,8 +8,10 @@ const sanitizeFileName = (name) =>
 
 export const downloadTrack = (url, outputDir, ytdlpPath) => {
   const videoId = url?.id;
-  const checkFile = `${videoId}.opus`;
-  const checkFilePath = path.join(tempDir, checkFile);
+  const files = fs.readdirSync(tempDir);
+  const checkFilePath = files
+    .map((f) => path.join(tempDir, f))
+    .find((f) => path.basename(f).startsWith(videoId + "."));
 
   if (fs.existsSync(checkFilePath)) {
     const safeTitle = sanitizeFileName(url.title || videoId);

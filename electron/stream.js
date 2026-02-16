@@ -11,51 +11,72 @@ export async function streamAudio(req, res, ytdlpPath) {
   }
 
   const { videoId } = req.query;
-  const outputPath = path.join(tempDir, `${videoId}.opus`);
 
   if (!videoId) {
     res.writeHead(400);
     return res.end("Missing videoId");
   }
 
-  if (!fs.existsSync(outputPath) && !activeDownloads.has(videoId)) {
-    startDownload(videoId, outputPath, ytdlpPath);
+  const outputPath = path.join(tempDir, videoId);
+
+  let existingFile = findDownloadedFile(videoId);
+
+  if (!existingFile) {
+    if (activeDownloads.has(videoId)) {
+      await activeDownloads.get(videoId);
+    } else {
+      const downloadPromise = startDownload(videoId, outputPath, ytdlpPath);
+      activeDownloads.set(videoId, downloadPromise);
+      await downloadPromise;
+    }
+
+    existingFile = findDownloadedFile(videoId);
   }
 
-  await waitForFile(outputPath);
+  if (!existingFile) {
+    res.writeHead(500);
+    return res.end("Download failed");
+  }
 
-  serveFile(req, res, outputPath);
+  serveFile(req, res, existingFile);
+}
+
+function findDownloadedFile(videoId) {
+  const files = fs.readdirSync(tempDir);
+  const match = files.find((f) => f.startsWith(videoId + "."));
+  return match ? path.join(tempDir, match) : null;
 }
 
 function startDownload(videoId, outputPath, ytdlpPath) {
-  const ytdlp = spawn(ytdlpPath, [
-    "-x",
-    "--audio-format",
-    "best",
-    "-o",
-    outputPath,
-    `https://www.youtube.com/watch?v=${videoId}`,
-  ]);
+  return new Promise((resolve, reject) => {
+    const ytdlp = spawn(ytdlpPath, [
+      "-f",
+      "251/bestaudio/best",
+      "--no-playlist",
+      "-o",
+      `${outputPath}.%(ext)s`,
+      `https://www.youtube.com/watch?v=${videoId}`,
+    ]);
 
-  activeDownloads.set(videoId, ytdlp);
+    activeDownloads.set(videoId, ytdlp);
 
-  ytdlp.on("close", () => {
-    activeDownloads.delete(videoId);
-    console.log("Download finished:", videoId);
-  });
-}
+    ytdlp.stdout.on("data", (data) => {
+      console.log(data.toString());
+    });
 
-function waitForFile(filePath) {
-  return new Promise((resolve) => {
-    const interval = setInterval(() => {
-      if (fs.existsSync(filePath)) {
-        const { size } = fs.statSync(filePath);
-        if (size > 100000) {
-          clearInterval(interval);
-          resolve();
-        }
+    ytdlp.stderr.on("data", (data) => {
+      console.log(data.toString());
+    });
+
+    ytdlp.on("close", (code) => {
+      activeDownloads.delete(videoId);
+      if (code === 0) {
+        console.log("Download finished:", videoId);
+        resolve();
+      } else {
+        reject(new Error(`yt-dlp exited with code ${code}`));
       }
-    }, 100);
+    });
   });
 }
 
@@ -63,6 +84,10 @@ function serveFile(req, res, filePath) {
   const stat = fs.statSync(filePath);
   const fileSize = stat.size;
   const range = req.headers.range;
+
+  const ext = path.extname(filePath);
+  const mime =
+    ext === ".webm" ? "audio/webm" : ext === ".m4a" ? "audio/mp4" : "audio/ogg";
 
   if (range) {
     const parts = range.replace(/bytes=/, "").split("-");
@@ -76,16 +101,17 @@ function serveFile(req, res, filePath) {
       "Content-Range": `bytes ${start}-${end}/${fileSize}`,
       "Accept-Ranges": "bytes",
       "Content-Length": chunkSize,
-      "Content-Type": "audio/ogg",
+      "Content-Type": mime,
     });
 
     stream.pipe(res);
   } else {
     res.writeHead(200, {
       "Content-Length": fileSize,
-      "Content-Type": "audio/mpeg",
+      "Content-Type": mime,
     });
 
     fs.createReadStream(filePath).pipe(res);
+    console.log(filePath);
   }
 }
