@@ -7,4 +7,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
   downloadTrack: (url) => ipcRenderer.invoke("download-track", url),
   searchYoutube: (query) => ipcRenderer.invoke("search-youtube", query),
   getPlaylist: () => ipcRenderer.invoke("current-download"),
+  windowMinimize: () => ipcRenderer.send("window-minimize"),
+  windowClose: () => ipcRenderer.send("window-close"),
 });

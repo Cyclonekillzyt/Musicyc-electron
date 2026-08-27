@@ -1,0 +1,2247 @@
+================
+File: Desktop/.gitignore
+================
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependencies
+node_modules
+
+# Build outputs
+dist
+dist-ssr
+dist_electron
+Frontend/dist  # <-- match exact folder name
+
+# Environment files
+.env
+
+# Editors and OS
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+
+
+================
+File: Desktop/Frontend/.gitignore
+================
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.env
+
+
+
+================
+File: Desktop/Frontend/README.md
+================
+
+# Musicyc — Vintage Hi-Fi Redesign
+
+This is a full UI/UX redesign of the Musicyc frontend, restyled as a
+vintage hi-fi receiver: walnut cabinet, brass hardware, a VU-meter
+teal accent, and a spinning turntable in place of a static thumbnail.
+
+## What changed
+- `src/index.css` — new custom daisyUI theme (`hifi`) plus all the
+  hand-built cabinet/brass/VU/turntable styles.
+- `src/App.jsx` — switched to `data-theme="hifi"` and a wood cabinet
+  background instead of the flat wallpaper.
+- `src/components/Thumb.jsx` — now a turntable: the record spins
+  (via CSS, paused/running off `isPlaying`) and the tonearm lowers
+  onto it when a track is playing.
+- `src/components/Controls.jsx` — transport is now brass buttons, a
+  tape-counter style scrubber, toggle "switches" with LED dots for
+  repeat/shuffle, and a decorative VU meter that pulses while playing.
+- `src/components/Description.jsx`, `Header.jsx`, `Result.jsx` — serif
+  display type for titles, condensed label type for metadata, tuner-
+  style search input, catalogue-style result rows.
+- `src/pages/*` — wrapped in a `.hifi-panel` cabinet with brass corner
+  screws.
+
+## Not changed
+All state/data logic (`PlayerContext.jsx`, `Download.jsx`, IPC calls,
+routing) is untouched — this is a visual layer change only.
+
+## How to use
+Copy this `Frontend` folder over your existing one (or diff it in),
+then `npm install && npm run dev` as usual. Your existing
+`src/assets/sasa.png` (and any other assets) should be dropped back
+into `src/assets/` — they weren't included in this delivery since the
+originals were binary files.
+
+
+
+================
+File: Desktop/Frontend/eslint.config.js
+================
+
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import { defineConfig, globalIgnores } from 'eslint/config'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{js,jsx}'],
+    extends: [
+      js.configs.recommended,
+      reactHooks.configs.flat.recommended,
+      reactRefresh.configs.vite,
+    ],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        ecmaFeatures: { jsx: true },
+        sourceType: 'module',
+      },
+    },
+    rules: {
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+    },
+  },
+])
+
+
+
+================
+File: Desktop/Frontend/index.html
+================
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Musicyc</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+
+
+
+================
+File: Desktop/Frontend/package.json
+================
+
+{
+  "name": "musicyc",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.18",
+    "daisyui": "^5.5.14",
+    "lucide-react": "^0.562.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-router-dom": "^7.11.0",
+    "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@types/react": "^19.2.5",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "vite": "^7.2.4"
+  }
+}
+
+
+
+================
+File: Desktop/Frontend/public/vite.svg
+================
+
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="31.88" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 257"><defs><linearGradient id="IconifyId1813088fe1fbc01fb466" x1="-.828%" x2="57.636%" y1="7.652%" y2="78.411%"><stop offset="0%" stop-color="#41D1FF"></stop><stop offset="100%" stop-color="#BD34FE"></stop></linearGradient><linearGradient id="IconifyId1813088fe1fbc01fb467" x1="43.376%" x2="50.316%" y1="2.242%" y2="89.03%"><stop offset="0%" stop-color="#FFEA83"></stop><stop offset="8.333%" stop-color="#FFDD35"></stop><stop offset="100%" stop-color="#FFA800"></stop></linearGradient></defs><path fill="url(#IconifyId1813088fe1fbc01fb466)" d="M255.153 37.938L134.897 252.976c-2.483 4.44-8.862 4.466-11.382.048L.875 37.958c-2.746-4.814 1.371-10.646 6.827-9.67l120.385 21.517a6.537 6.537 0 0 0 2.322-.004l117.867-21.483c5.438-.991 9.574 4.796 6.877 9.62Z"></path><path fill="url(#IconifyId1813088fe1fbc01fb467)" d="M185.432.063L96.44 17.501a3.268 3.268 0 0 0-2.634 3.014l-5.474 92.456a3.268 3.268 0 0 0 3.997 3.378l24.777-5.718c2.318-.535 4.413 1.507 3.936 3.838l-7.361 36.047c-.495 2.426 1.782 4.5 4.151 3.78l15.304-4.649c2.372-.72 4.652 1.36 4.15 3.788l-11.698 56.621c-.732 3.542 3.979 5.473 5.943 2.437l1.313-2.028l72.516-144.72c1.215-2.423-.88-5.186-3.54-4.672l-25.505 4.922c-2.396.462-4.435-1.77-3.759-4.114l16.646-57.705c.677-2.35-1.37-4.583-3.769-4.113Z"></path></svg>
+
+
+
+================
+File: Desktop/Frontend/src/App.jsx
+================
+
+import MusicPlayer from "./pages/MusicPlayer"
+import { Route, Routes } from "react-router-dom"
+import SearchPage from "./pages/SearchPage"
+import PlaylistPage from "./pages/PlaylistPage.jsx"
+
+const App = () => {
+  return (
+    <div
+      data-theme="hifi"
+      className="hifi-shell h-screen w-screen overflow-hidden flex justify-center items-center flex-col"
+    >
+      <Routes>
+        <Route path="/" element={<MusicPlayer />} />
+        <Route path="/search" element={<SearchPage />} />
+        <Route path="/playlist" element={<PlaylistPage />} />
+      </Routes>
+    </div>
+  );
+}
+
+export default App
+
+
+
+================
+File: Desktop/Frontend/src/assets/6IX9INE- GOOBA (Official Music Video).opus (SKIPPED - SIZE 2234.31KB) ---
+================
+
+================
+File: Desktop/Frontend/src/assets/sasa.png (SKIPPED - SIZE 2913.69KB) ---
+================
+
+================
+File: Desktop/Frontend/src/components/Controls.jsx
+================
+
+import {
+  Play,
+  Repeat,
+  Shuffle,
+  SkipBack,
+  SkipForward,
+  Pause,
+} from "lucide-react";
+import { usePlayer } from "../context/PlayerContext";
+import { useEffect } from "react";
+
+const Controls = () => {
+  const {
+    audioRef,
+    isPlaying,
+    setIsPlaying,
+    progress,
+    audioSize,
+    setAudioSize,
+    playedTime,
+    setProgress,
+    seeking,
+    setSeeking,
+  } = usePlayer();
+
+  const handleProgressChange = (e) => {
+    const newProgress = parseFloat(e.target.value);
+    setProgress(newProgress);
+  };
+
+  const handleSeekingStart = () => {
+    setSeeking(true);
+  };
+
+  const handleSeekEnd = (e) => {
+    const audio = audioRef.current;
+    const newProgress = parseFloat(e.target.value);
+    audio.currentTime = (newProgress / 100) * audio.duration;
+    setSeeking(false);
+  };
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    const updateAudioSize = () => {
+      setAudioSize(audio.duration);
+    };
+    audio.addEventListener("loadedmetadata", updateAudioSize);
+    return () => audio.removeEventListener("loadedmetadata", updateAudioSize);
+  }, [audioRef, setAudioSize]);
+
+  const togglePlay = () => {
+    if (audioRef.current.paused) {
+      audioRef.current.play();
+      setIsPlaying(true);
+    } else {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    }
+  };
+
+  const totalLabel = audioSize
+    ? `${Math.floor(audioSize / 60)}:${Math.floor(audioSize % 60)
+        .toString()
+        .padStart(2, "0")}`
+    : "0:00";
+
+  return (
+    <div className="flex flex-col gap-3 px-2 pb-1">
+      <div className="w-full flex justify-center items-center gap-3">
+        <span className="hifi-time text-right">{playedTime || "0:00"}</span>
+        <input
+          type="range"
+          min={0}
+          max={100}
+          value={progress}
+          className="hifi-range"
+          style={{ "--val": `${progress}%` }}
+          onMouseDown={handleSeekingStart}
+          onTouchStart={handleSeekingStart}
+          onChange={(e) => handleProgressChange(e)}
+          onMouseUp={(e) => handleSeekEnd(e)}
+          onTouchEnd={(e) => handleSeekEnd(e)}
+        />
+        <span className="hifi-time">{totalLabel}</span>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <div className="hifi-toggle" title="Repeat">
+          <Repeat size={16} />
+          <span className="hifi-toggle-led" />
+        </div>
+
+        <div className="flex items-center gap-4">
+          <div className="hifi-btn-round" title="Previous track">
+            <SkipBack size={16} />
+          </div>
+
+          <button
+            type="button"
+            className="hifi-btn-play"
+            onClick={togglePlay}
+            aria-label={isPlaying ? "Pause" : "Play"}
+          >
+            {isPlaying ? <Pause size={22} /> : <Play size={22} className="ml-0.5" />}
+          </button>
+
+          <div className="hifi-btn-round" title="Next track">
+            <SkipForward size={16} />
+          </div>
+        </div>
+
+        <div className="hifi-toggle" title="Shuffle">
+          <Shuffle size={16} />
+          <span className="hifi-toggle-led" />
+        </div>
+      </div>
+
+      <div className={`hifi-vu justify-center ${isPlaying ? "is-playing" : ""}`}>
+        <div className="hifi-vu-bar" />
+        <div className="hifi-vu-bar" />
+        <div className="hifi-vu-bar" />
+        <div className="hifi-vu-bar" />
+        <div className="hifi-vu-bar" />
+      </div>
+    </div>
+  );
+};
+
+export default Controls;
+
+
+
+================
+File: Desktop/Frontend/src/components/Description.jsx
+================
+
+import { DownloadIcon } from "lucide-react";
+import { usePlayer } from "../context/PlayerContext";
+import { handleDownload } from "./Download.jsx";
+
+const Description = ({ info }) => {
+  const { setDownload } = usePlayer();
+  const handleClick = () => {
+    if (!info) return;
+    setDownload(info);
+    handleDownload(info);
+  };
+  return (
+    <div className="relative flex items-center justify-between gap-4 px-2">
+      <div className="min-w-0">
+        <h2
+          className="truncate text-2xl"
+          style={{ fontFamily: "var(--font-display)", color: "var(--cream)" }}
+        >
+          {info ? info.title : "Nothing on the platter"}
+        </h2>
+        <p className="hifi-eyebrow truncate mt-1">
+          {info ? info.channel : "Select a track to begin"}
+        </p>
+      </div>
+      <button
+        type="button"
+        className="hifi-btn-round shrink-0"
+        onClick={handleClick}
+        aria-label="Download this track"
+        title="Download this track"
+      >
+        <DownloadIcon size={18} />
+      </button>
+    </div>
+  );
+};
+
+export default Description;
+
+
+
+================
+File: Desktop/Frontend/src/components/Download.jsx
+================
+
+export const handleDownload = async (download) => {
+  if (!download?.id) return;
+  try {
+    await window.electronAPI.downloadTrack(download);
+    alert("Download completed! Check your Music/Musicyc folder");
+  } catch (err) {
+    console.error("Download failed:", err);
+    alert("Failed to download audio. Try again.");
+  }
+};
+
+
+
+================
+File: Desktop/Frontend/src/components/Header.jsx
+================
+
+import { ChevronDown, Disc3, Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { usePlayer } from "../context/PlayerContext";
+
+const Header = () => {
+  const { pageNumber, setPageNumber } = usePlayer();
+  const navigate = useNavigate();
+  const handleClick = (e) => {
+    e.preventDefault();
+    navigate("/search");
+  };
+
+  const playlistNavigation = (e) => {
+    e.preventDefault();
+    if (pageNumber === 1) {
+      navigate("/playlist");
+      setPageNumber(2);
+    } else {
+      navigate("/");
+      setPageNumber(1);
+    }
+  };
+
+  return (
+    <div className="flex justify-between items-center gap-6 mb-8">
+      <div className="flex items-center gap-2">
+        <Disc3 size={20} style={{ color: "var(--brass)" }} />
+        <span className="hifi-wordmark text-lg">MUSICYC</span>
+      </div>
+
+      <div className="flex items-center gap-3">
+        <div className="relative">
+          <input
+            type="search"
+            placeholder="Search a track…"
+            className="hifi-tuner px-4 py-2 pr-10 w-56"
+            onClick={(e) => handleClick(e)}
+            readOnly
+          />
+          <Search
+            size={16}
+            className="absolute top-1/2 right-3.5 -translate-y-1/2 pointer-events-none"
+            style={{ color: "var(--brass)" }}
+          />
+        </div>
+
+        <button
+          type="button"
+          className="hifi-btn-round"
+          onClick={(e) => playlistNavigation(e)}
+          aria-label={pageNumber === 1 ? "Open your collection" : "Back to player"}
+          title={pageNumber === 1 ? "Open your collection" : "Back to player"}
+        >
+          <ChevronDown
+            size={18}
+            style={{
+              transform: pageNumber === 1 ? "rotate(0deg)" : "rotate(180deg)",
+            }}
+          />
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default Header;
+
+
+
+================
+File: Desktop/Frontend/src/components/Result.jsx
+================
+
+import { Disc3 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { usePlayer } from "../context/PlayerContext";
+import sas from "../assets/sasa.png";
+
+const Result = ({ data }) => {
+  const navigate = useNavigate();
+  const { setCurrentTrack } = usePlayer();
+
+  const title = data.title || "Unknown Title";
+  const artist = data.channel || "Unknown Artist";
+  const image = data.thumbnails ? data.thumbnails.default.url : sas;
+
+  const handleClick = () => {
+    setCurrentTrack(data);
+    navigate("/");
+  };
+
+  return (
+    <div
+      className="hifi-row p-2.5 rounded-lg flex items-center gap-3 px-3 cursor-pointer"
+      onClick={handleClick}
+    >
+      <div
+        className="relative shrink-0 rounded-full overflow-hidden size-9 flex items-center justify-center"
+        style={{ border: "1.5px solid var(--brass-dark)", background: "#150e0b" }}
+      >
+        {data.thumbnails ? (
+          <img src={image} alt="" className="w-full h-full object-cover" />
+        ) : (
+          <Disc3 size={16} style={{ color: "var(--brass)" }} />
+        )}
+      </div>
+
+      <div className="min-w-0">
+        <p className="truncate font-medium" style={{ color: "var(--cream)" }}>
+          {title}
+        </p>
+        <p className="hifi-eyebrow truncate normal-case tracking-normal opacity-70 text-xs">
+          {artist}
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export default Result;
+
+
+
+================
+File: Desktop/Frontend/src/components/Thumb.jsx
+================
+
+import sas from "../assets/sasa.png";
+import { usePlayer } from "../context/PlayerContext";
+
+const Thumb = ({ pic }) => {
+  const { isPlaying } = usePlayer();
+
+  return (
+    <div className="hifi-turntable">
+      <div className={`hifi-record ${isPlaying ? "is-playing" : ""}`}>
+        <div className="hifi-record-label">
+          <img src={pic || sas} alt="" />
+        </div>
+        <div className="hifi-spindle" />
+      </div>
+
+      <div className={`hifi-tonearm ${isPlaying ? "is-playing" : ""}`}>
+        <div className="hifi-tonearm-pivot" />
+        <div className="hifi-tonearm-body" />
+        <div className="hifi-tonearm-head" />
+      </div>
+    </div>
+  );
+};
+
+export default Thumb;
+
+
+
+================
+File: Desktop/Frontend/src/context/PlayerContext.jsx
+================
+
+import { useRef, createContext, useContext, useState, useEffect } from "react";
+
+const PlayerContext = createContext();
+
+export const PlayerProvider = ({ children }) => {
+  const [currentTrack, setCurrentTrack] = useState(null);
+  const [download, setDownload] = useState(null);
+  const audioRef = useRef(new Audio());
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [playlist, setPlaylist] = useState([]);
+  const [audioSize, setAudioSize] = useState(0);
+  const [playedTime, setPlayedTime] = useState("0:00");
+  const [seeking, setSeeking] = useState(false);
+  const [pageNumber, setPageNumber] = useState(1);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+
+    const updateProgress = () => {
+      if (!seeking) {
+        const percent = (audio.currentTime / audio.duration) * 100 || 0;
+        setProgress(percent);
+        const seconds = Math.floor(audio.currentTime);
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        const formatted = `${minutes}:${remainingSeconds
+          .toString()
+          .padStart(2, "0")}`;
+        setPlayedTime(formatted);
+      }
+    };
+    audio.addEventListener("timeupdate", updateProgress);
+
+    return () => audio.removeEventListener("timeupdate", updateProgress);
+  }, [seeking]);
+  async function playAudio(track) {
+    const audio = audioRef.current;
+
+    if (audio.src.includes(track) && !audio.paused) {
+      return;
+    }
+
+    audio.pause();
+    if (track.source === "stream") {
+      audio.src = `http://localhost:3333/stream?videoId=${track.videoId}`;
+    }
+
+    if (track.source === "local") {
+      audio.src = `file://${track.path}`;
+    }
+    audio.load();
+
+    try {
+      await audio.play();
+      setIsPlaying(true);
+    } catch (err) {
+      console.error("Error playing audio:", err);
+    }
+  }
+
+  useEffect(() => {
+    async function fetchPlaylist() {
+      const playlists = await window.electronAPI.getPlaylist();
+      setPlaylist(playlists);
+    }
+    fetchPlaylist();
+  }, []);
+
+
+
+  return (
+    <PlayerContext.Provider
+      value={{
+        audioRef,
+        currentTrack,
+        setCurrentTrack,
+        isPlaying,
+        setIsPlaying,
+        progress,
+        setProgress,
+        download,
+        setDownload,
+        playlist,
+        setPlaylist,
+        playAudio,
+        audioSize,
+        setAudioSize,
+        playedTime,
+        setPlayedTime,
+        seeking,
+        setSeeking,
+        pageNumber,
+        setPageNumber,
+      }}
+    >
+      {children}
+    </PlayerContext.Provider>
+  );
+};
+
+export const usePlayer = () => {
+  return useContext(PlayerContext);
+};
+
+
+
+================
+File: Desktop/Frontend/src/index.css
+================
+
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Oswald:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap");
+@import "tailwindcss";
+
+@plugin "daisyui" {
+  themes: false;
+}
+
+/* ---------------------------------------------------- */
+/* Custom daisyUI theme: "hifi" — walnut cabinet + brass */
+/* ---------------------------------------------------- */
+@plugin "daisyui/theme" {
+  name: "hifi";
+  default: true;
+  prefersdark: false;
+  color-scheme: dark;
+
+  --color-base-100: #241914;
+  --color-base-200: #1c130f;
+  --color-base-300: #150e0b;
+  --color-base-content: #ede3cf;
+
+  --color-primary: #c9a24b;
+  --color-primary-content: #1c130f;
+
+  --color-secondary: #2f6e68;
+  --color-secondary-content: #ede3cf;
+
+  --color-accent: #6fe0d2;
+  --color-accent-content: #12312d;
+
+  --color-neutral: #150e0b;
+  --color-neutral-content: #ede3cf;
+
+  --color-info: #6fe0d2;
+  --color-success: #7fa563;
+  --color-warning: #d99a4e;
+  --color-error: #b3492f;
+
+  --radius-selector: 0.35rem;
+  --radius-field: 0.6rem;
+  --radius-box: 0.9rem;
+  --border: 1.5px;
+  --depth: 1;
+  --noise: 0;
+}
+
+:root {
+  --cabinet: #241914;
+  --cabinet-dark: #150e0b;
+  --cabinet-light: #3a281d;
+  --veneer-line: rgba(0, 0, 0, 0.35);
+  --brass: #c9a24b;
+  --brass-bright: #e8cd85;
+  --brass-dark: #7d6132;
+  --teal: #2f6e68;
+  --teal-bright: #6fe0d2;
+  --cream: #ede3cf;
+  --peak: #c1512d;
+
+  --font-display: "Fraunces", "Iowan Old Style", serif;
+  --font-label: "Oswald", "Arial Narrow", sans-serif;
+  --font-mono: "Space Mono", "Courier New", monospace;
+}
+
+* {
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.2s ease;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-label);
+  color: var(--cream);
+  background: var(--cabinet-dark);
+}
+
+::selection {
+  background: var(--teal);
+  color: var(--cream);
+}
+
+/* Focus visibility (kept legible against dark wood) */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--teal-bright);
+  outline-offset: 2px;
+}
+
+/* ---------------------------------------------------- */
+/* Cabinet shell — replaces the flat background/wallpaper */
+/* ---------------------------------------------------- */
+.hifi-shell {
+  background:
+    radial-gradient(120% 140% at 50% -10%, #3a281d 0%, transparent 55%),
+    repeating-linear-gradient(
+      100deg,
+      rgba(0, 0, 0, 0.15) 0px,
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 5px
+    ),
+    linear-gradient(160deg, #26190f 0%, #180f0a 60%, #120b08 100%);
+  position: relative;
+}
+
+.hifi-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 140px rgba(0, 0, 0, 0.65);
+}
+
+/* ---------------------------------------------------- */
+/* Cabinet panel — the main receiver "chassis" */
+/* ---------------------------------------------------- */
+.hifi-panel {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.25)),
+    linear-gradient(135deg, #2a1c14, #1c130d 70%);
+  border: 1px solid var(--brass-dark);
+  border-radius: 1.25rem;
+  box-shadow:
+    0 20px 45px -15px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.hifi-screw {
+  position: absolute;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 35% 30%, var(--brass-bright), var(--brass-dark) 70%);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.4);
+}
+.hifi-screw::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 65%;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.55);
+  transform: rotate(35deg);
+}
+.hifi-screw-tl { top: 0.7rem; left: 0.7rem; }
+.hifi-screw-tr { top: 0.7rem; right: 0.7rem; }
+.hifi-screw-bl { bottom: 0.7rem; left: 0.7rem; }
+.hifi-screw-br { bottom: 0.7rem; right: 0.7rem; }
+
+/* ---------------------------------------------------- */
+/* Wordmark */
+/* ---------------------------------------------------- */
+.hifi-wordmark {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--brass-bright);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+}
+
+.hifi-eyebrow {
+  font-family: var(--font-label);
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  font-size: 0.65rem;
+  color: var(--teal-bright);
+  opacity: 0.85;
+}
+
+/* ---------------------------------------------------- */
+/* Turntable / vinyl (signature element) */
+/* ---------------------------------------------------- */
+.hifi-turntable {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 50% 42%, #1c1512 0%, #0e0a08 70%);
+  border-radius: 0.85rem;
+  overflow: hidden;
+}
+
+.hifi-turntable::before {
+  /* brushed metal platter ring */
+  content: "";
+  position: absolute;
+  width: 88%;
+  aspect-ratio: 1 / 1;
+  border-radius: 9999px;
+  background: repeating-radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 255, 255, 0.05) 0px,
+    rgba(255, 255, 255, 0.05) 1px,
+    transparent 2px,
+    transparent 4px
+  );
+  box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.4), 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.hifi-record {
+  position: relative;
+  width: 78%;
+  aspect-ratio: 1 / 1;
+  border-radius: 9999px;
+  background:
+    repeating-radial-gradient(
+      circle at 50% 50%,
+      #0a0a0a 0px,
+      #0a0a0a 2px,
+      #161616 3px,
+      #0a0a0a 4px
+    );
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.6),
+    0 14px 26px rgba(0, 0, 0, 0.55);
+  animation: hifi-spin 3.2s linear infinite;
+  animation-play-state: paused;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hifi-record.is-playing {
+  animation-play-state: running;
+}
+
+.hifi-record-label {
+  width: 40%;
+  aspect-ratio: 1 / 1;
+  border-radius: 9999px;
+  overflow: hidden;
+  border: 2px solid var(--brass);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5), inset 0 0 12px rgba(0, 0, 0, 0.5);
+}
+
+.hifi-record-label img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hifi-spindle {
+  position: absolute;
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 35% 30%, var(--brass-bright), var(--brass-dark));
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6);
+  z-index: 2;
+}
+
+.hifi-tonearm {
+  position: absolute;
+  top: 4%;
+  right: 6%;
+  width: 46%;
+  height: 46%;
+  transform-origin: 92% 8%;
+  transform: rotate(-32deg);
+  z-index: 3;
+  pointer-events: none;
+}
+
+.hifi-tonearm.is-playing {
+  transform: rotate(-6deg);
+}
+
+.hifi-tonearm-body {
+  position: absolute;
+  top: 6%;
+  right: 4%;
+  width: 6px;
+  height: 88%;
+  border-radius: 6px;
+  background: linear-gradient(180deg, var(--brass-bright), var(--brass-dark));
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.hifi-tonearm-pivot {
+  position: absolute;
+  top: 0;
+  right: -6px;
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 35% 30%, var(--brass-bright), var(--brass-dark));
+  box-shadow: 0 0 0 2px var(--cabinet-dark), 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hifi-tonearm-head {
+  position: absolute;
+  bottom: -4px;
+  right: -8px;
+  width: 16px;
+  height: 10px;
+  border-radius: 3px;
+  background: linear-gradient(135deg, #2a2a2a, #111);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6);
+}
+
+@keyframes hifi-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hifi-record {
+    animation: none !important;
+  }
+  * {
+    transition: none !important;
+  }
+}
+
+/* ---------------------------------------------------- */
+/* VU meters (decorative, ambient) */
+/* ---------------------------------------------------- */
+.hifi-vu {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 1.3rem;
+}
+
+.hifi-vu-bar {
+  width: 3px;
+  border-radius: 1px;
+  background: var(--teal);
+  height: 20%;
+  animation: hifi-vu-bounce 1.1s ease-in-out infinite;
+  animation-play-state: paused;
+}
+
+.hifi-vu.is-playing .hifi-vu-bar {
+  animation-play-state: running;
+}
+
+.hifi-vu-bar:nth-child(1) { animation-delay: 0s; }
+.hifi-vu-bar:nth-child(2) { animation-delay: 0.12s; background: var(--teal-bright); }
+.hifi-vu-bar:nth-child(3) { animation-delay: 0.24s; }
+.hifi-vu-bar:nth-child(4) { animation-delay: 0.36s; background: var(--peak); }
+.hifi-vu-bar:nth-child(5) { animation-delay: 0.18s; }
+
+@keyframes hifi-vu-bounce {
+  0%, 100% { height: 15%; }
+  50% { height: 90%; }
+}
+
+/* ---------------------------------------------------- */
+/* Transport controls */
+/* ---------------------------------------------------- */
+.hifi-btn-round {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 9999px;
+  color: var(--cream);
+  background: linear-gradient(180deg, #3a281d, #211610);
+  border: 1px solid var(--brass-dark);
+  box-shadow:
+    0 3px 0 rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+}
+
+.hifi-btn-round:hover {
+  color: var(--brass-bright);
+  border-color: var(--brass);
+  transform: translateY(-1px);
+}
+
+.hifi-btn-round:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hifi-btn-play {
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 35% 30%, var(--brass-bright), var(--brass) 55%, var(--brass-dark) 100%);
+  color: var(--cabinet-dark);
+  border: 1px solid var(--brass-dark);
+  box-shadow:
+    0 4px 0 var(--brass-dark),
+    0 10px 22px rgba(0, 0, 0, 0.5),
+    0 0 0 4px rgba(111, 224, 210, 0.08);
+  cursor: pointer;
+}
+
+.hifi-btn-play:hover {
+  box-shadow:
+    0 4px 0 var(--brass-dark),
+    0 10px 26px rgba(0, 0, 0, 0.55),
+    0 0 0 6px rgba(111, 224, 210, 0.16);
+}
+
+.hifi-btn-play:active {
+  transform: translateY(3px);
+  box-shadow: 0 0 0 var(--brass-dark);
+}
+
+.hifi-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 0.4rem;
+  color: var(--cream);
+  background: linear-gradient(180deg, #2a1c14, #180f0a);
+  border: 1px solid var(--brass-dark);
+  cursor: pointer;
+  position: relative;
+}
+
+.hifi-toggle.is-active {
+  color: var(--teal-bright);
+  border-color: var(--teal);
+  box-shadow: 0 0 8px rgba(111, 224, 210, 0.35);
+}
+
+.hifi-toggle-led {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background: var(--brass-dark);
+}
+
+.hifi-toggle.is-active .hifi-toggle-led {
+  background: var(--teal-bright);
+  box-shadow: 0 0 5px var(--teal-bright);
+}
+
+/* ---------------------------------------------------- */
+/* Tape-counter progress slider */
+/* ---------------------------------------------------- */
+.hifi-time {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--brass-bright);
+  letter-spacing: 0.03em;
+  min-width: 2.6rem;
+}
+
+.hifi-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, var(--teal) 0%, var(--teal) var(--val, 0%), rgba(0, 0, 0, 0.45) var(--val, 0%));
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.4);
+  outline: none;
+  cursor: pointer;
+}
+
+.hifi-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 35% 30%, var(--brass-bright), var(--brass-dark));
+  border: 1px solid var(--brass-dark);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.35);
+  margin-top: 0;
+}
+
+.hifi-range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 35% 30%, var(--brass-bright), var(--brass-dark));
+  border: 1px solid var(--brass-dark);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.35);
+}
+
+.hifi-range::-moz-range-track {
+  height: 6px;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+/* ---------------------------------------------------- */
+/* Tuner search input */
+/* ---------------------------------------------------- */
+.hifi-tuner {
+  background: linear-gradient(180deg, #17110c, #0f0a07);
+  border: 1px solid var(--brass-dark);
+  border-radius: 9999px;
+  color: var(--cream);
+  font-family: var(--font-label);
+  letter-spacing: 0.02em;
+}
+
+.hifi-tuner::placeholder {
+  color: rgba(237, 227, 207, 0.4);
+}
+
+.hifi-tuner:focus {
+  border-color: var(--teal-bright);
+  box-shadow: 0 0 0 3px rgba(111, 224, 210, 0.18);
+}
+
+/* ---------------------------------------------------- */
+/* Track rows (search / playlist results) */
+/* ---------------------------------------------------- */
+.hifi-row {
+  border: 1px solid transparent;
+  border-bottom: 1px solid rgba(201, 162, 75, 0.14);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.hifi-row:hover {
+  background: rgba(111, 224, 210, 0.06);
+  border-color: rgba(111, 224, 210, 0.25);
+}
+
+.hifi-row-index {
+  font-family: var(--font-mono);
+  color: var(--brass-dark);
+  font-size: 0.72rem;
+}
+
+/* ---------------------------------------------------- */
+/* Scrollbars */
+/* ---------------------------------------------------- */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--brass-dark) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--brass-dark);
+  border-radius: 9999px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+
+================
+File: Desktop/Frontend/src/main.jsx
+================
+
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.jsx'
+import { HashRouter } from 'react-router-dom'
+import { PlayerProvider } from './context/PlayerContext.jsx'
+
+
+createRoot(document.getElementById("root")).render(
+  <StrictMode>
+    <HashRouter>
+      <PlayerProvider>
+        <App />
+      </PlayerProvider>
+    </HashRouter>
+  </StrictMode>
+);
+
+
+
+================
+File: Desktop/Frontend/src/pages/MusicPlayer.jsx
+================
+
+import Controls from "../components/Controls";
+import Description from "../components/Description";
+import Header from "../components/Header";
+import Thumb from "../components/Thumb";
+import { usePlayer } from "../context/PlayerContext";
+import { useEffect } from "react";
+
+const MusicPlayer = () => {
+  const { currentTrack, playAudio } = usePlayer();
+  const thumb = currentTrack?.thumbnails?.high?.url ?? null;
+
+  useEffect(() => {
+    if (!currentTrack) return;
+    playAudio(currentTrack);
+  }, [currentTrack]);
+
+  return (
+    <div className="flex flex-col h-full overflow-hidden py-10 w-[60%] max-w-2xl min-w-[420px]">
+      <Header />
+      <div className="hifi-panel w-full h-full p-7 flex flex-col gap-5">
+        <span className="hifi-screw hifi-screw-tl" />
+        <span className="hifi-screw hifi-screw-tr" />
+        <span className="hifi-screw hifi-screw-bl" />
+        <span className="hifi-screw hifi-screw-br" />
+
+        <div className="w-full h-3/4">
+          <Thumb pic={thumb} />
+        </div>
+
+        <div className="w-full h-1/4 flex flex-col justify-between gap-4">
+          <Description info={currentTrack} />
+          <Controls />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default MusicPlayer;
+
+
+
+================
+File: Desktop/Frontend/src/pages/PlaylistPage.jsx
+================
+
+import Header from "../components/Header";
+import { usePlayer } from "../context/PlayerContext";
+import Result from "../components/Result";
+
+const PlaylistPage = () => {
+  const { playlist } = usePlayer();
+
+  return (
+    <div className="flex flex-col h-full overflow-hidden py-10 w-[60%] max-w-2xl min-w-[420px]">
+      <div className="hifi-panel w-full h-full p-7 flex flex-col gap-5">
+        <span className="hifi-screw hifi-screw-tl" />
+        <span className="hifi-screw hifi-screw-tr" />
+        <span className="hifi-screw hifi-screw-bl" />
+        <span className="hifi-screw hifi-screw-br" />
+
+        <Header />
+
+        <div className="mb-1">
+          <p className="hifi-eyebrow">Local library</p>
+          <h1
+            className="text-xl"
+            style={{ fontFamily: "var(--font-display)", color: "var(--cream)" }}
+          >
+            Your Collection
+          </h1>
+        </div>
+
+        <div className="w-full h-full overflow-y-auto flex flex-col gap-1.5 pr-1">
+          {playlist.length === 0 ? (
+            <p className="text-center mt-10 hifi-eyebrow normal-case tracking-normal opacity-60">
+              No records on the shelf yet
+            </p>
+          ) : (
+            playlist.map((track) => <Result key={track.id} data={track} />)
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default PlaylistPage;
+
+
+
+================
+File: Desktop/Frontend/src/pages/SearchPage.jsx
+================
+
+import { useState } from "react";
+import { Search } from "lucide-react";
+import Result from "../components/Result";
+import { ChevronLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+const SearchPage = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const data = await window.electronAPI.searchYoutube(searchQuery);
+      setResults(data);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+    }
+  };
+
+  return (
+    <div className="hifi-panel h-full w-[60%] max-w-2xl min-w-[420px] flex flex-col my-5 items-center p-8 gap-6">
+      <span className="hifi-screw hifi-screw-tl" />
+      <span className="hifi-screw hifi-screw-tr" />
+      <span className="hifi-screw hifi-screw-bl" />
+      <span className="hifi-screw hifi-screw-br" />
+
+      <form className="relative w-full flex items-center gap-3" onSubmit={(e) => handleSubmit(e)}>
+        <button
+          type="button"
+          className="hifi-btn-round shrink-0"
+          onClick={() => navigate("/")}
+          aria-label="Back to player"
+        >
+          <ChevronLeft size={18} />
+        </button>
+
+        <div className="relative flex-1">
+          <input
+            type="search"
+            autoFocus
+            placeholder="Tune in a song or artist…"
+            className="hifi-tuner w-full py-3 px-5 pr-12"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <button
+            type="submit"
+            className="absolute top-1/2 right-2 -translate-y-1/2 hifi-btn-round"
+            style={{ width: "2.1rem", height: "2.1rem" }}
+            aria-label="Search"
+          >
+            <Search size={15} />
+          </button>
+        </div>
+      </form>
+
+      <div className="w-full h-full overflow-y-auto flex flex-col gap-1.5 pr-1">
+        {results.length === 0 ? (
+          <p className="text-center mt-10 hifi-eyebrow normal-case tracking-normal opacity-60">
+            No stations found yet — try a search
+          </p>
+        ) : (
+          results.map((item, index) => <Result key={index} data={item} />)
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default SearchPage;
+
+
+
+================
+File: Desktop/Frontend/vite.config.js
+================
+
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+  base: './'
+})
+
+
+
+================
+File: Desktop/electron/bin/.yt-dlp.exe.GfwF4W
+================
+
+
+
+
+================
+File: Desktop/electron/bin/yt-dlp.exe (SKIPPED - SIZE 18024.44KB) ---
+================
+
+================
+File: Desktop/electron/bin/yt-dlp_linux (SKIPPED - SIZE 35209.22KB) ---
+================
+
+================
+File: Desktop/electron/bin/yt-dlp_macos (SKIPPED - SIZE 35983.20KB) ---
+================
+
+================
+File: Desktop/electron/dist_electron/.Musicyc-1.0.0.AppImage.NVxFCG
+================
+
+
+
+
+================
+File: Desktop/electron/dist_electron/Musicyc-1.0.0.AppImage (SKIPPED - SIZE 204871.28KB) ---
+================
+
+================
+File: Desktop/electron/dist_electron/Musicyc-1.0.1.AppImage (SKIPPED - SIZE 207666.03KB) ---
+================
+
+================
+File: Desktop/electron/dist_electron/builder-debug.yml
+================
+
+x64:
+  firstOrDefaultFilePatterns:
+    - '!**/node_modules'
+    - '!assets{,/**/*}'
+    - '!dist_electron{,/**/*}'
+    - main.js
+    - preload.js
+    - package.json
+    - context.js
+    - server.js
+    - download.js
+    - stream.js
+    - search.js
+    - logic/**/*
+    - .env
+    - '!**/*.{iml,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,suo,xproj,cc,d.ts,mk,a,o,forge-meta,pdb}'
+    - '!**/._*'
+    - '!**/electron-builder.{yaml,yml,json,json5,toml,ts}'
+    - '!**/{.git,.hg,.svn,CVS,RCS,SCCS,__pycache__,.DS_Store,thumbs.db,.gitignore,.gitkeep,.gitattributes,.npmignore,.idea,.vs,.flowconfig,.jshintrc,.eslintrc,.circleci,.yarn-integrity,.yarn-metadata.json,yarn-error.log,yarn.lock,package-lock.json,npm-debug.log,appveyor.yml,.travis.yml,circle.yml,.nyc_output,.husky,.github,electron-builder.env}'
+    - '!.yarn{,/**/*}'
+    - '!.editorconfig'
+    - '!.yarnrc.yml'
+  nodeModuleFilePatterns:
+    - '**/*'
+    - main.js
+    - preload.js
+    - package.json
+    - context.js
+    - server.js
+    - download.js
+    - stream.js
+    - search.js
+    - logic/**/*
+    - .env
+
+
+
+================
+File: Desktop/electron/dist_electron/builder-effective-config.yaml
+================
+
+directories:
+  output: dist_electron
+  buildResources: assets
+appId: com.example.musicyc
+productName: Musicyc
+files:
+  - filter:
+      - main.js
+      - preload.js
+      - package.json
+      - context.js
+      - server.js
+      - download.js
+      - stream.js
+      - search.js
+      - logic/**/*
+      - .env
+extraResources:
+  - from: bin
+    to: bin
+  - from: ../Frontend/dist
+    to: frontend/dist
+mac:
+  target:
+    - dmg
+    - zip
+win:
+  target:
+    - nsis
+    - zip
+linux:
+  target:
+    - AppImage
+    - deb
+electronVersion: 39.2.7
+
+
+
+================
+File: Desktop/electron/dist_electron/linux-unpacked/locales/am.pak (SKIPPED - SIZE 192.00KB) ---
+================
+
+================
+File: Desktop/electron/dist_electron/linux-unpacked/locales/hu.pak (SKIPPED - SIZE 673.82KB) ---
+================
+
+================
+File: Desktop/electron/dist_electron/linux-unpacked/locales/id.pak
+================
+
+
+
+
+================
+File: Desktop/electron/dist_electron/linux-unpacked/locales/lv.pak (SKIPPED - SIZE 681.24KB) ---
+================
+
+================
+File: Desktop/electron/dist_electron/linux-unpacked/locales/ml.pak (SKIPPED - SIZE 96.00KB) ---
+================
+
+================
+File: Desktop/electron/dist_electron/linux-unpacked/locales/ms.pak (SKIPPED - SIZE 585.71KB) ---
+================
+
+================
+File: Desktop/electron/dist_electron/linux-unpacked/locales/nl.pak (SKIPPED - SIZE 585.46KB) ---
+================
+
+================
+File: Desktop/electron/dist_electron/linux-unpacked/locales/sk.pak (SKIPPED - SIZE 544.00KB) ---
+================
+
+================
+File: Desktop/electron/dist_electron/linux-unpacked/locales/th.pak (SKIPPED - SIZE 1202.61KB) ---
+================
+
+================
+File: Desktop/electron/dist_electron/linux-unpacked/vk_swiftshader_icd.json
+================
+
+{"file_format_version": "1.0.0", "ICD": {"library_path": "./libvk_swiftshader.so", "api_version": "1.0.5"}}
+
+
+================
+File: Desktop/electron/dist_electron/musicyc_1.0.0_amd64.deb (SKIPPED - SIZE 165969.91KB) ---
+================
+
+================
+File: Desktop/electron/dist_electron/musicyc_1.0.1_amd64.deb (SKIPPED - SIZE 168901.84KB) ---
+================
+
+================
+File: Desktop/electron/download.js
+================
+
+import { spawn } from "child_process";
+import path from "path";
+import { tempDir } from "./main.js";
+import fs from "fs";
+
+const sanitizeFileName = (name) =>
+  name.replace(/[<>:"/\\|?*\x00-\x1F]/g, "").trim();
+
+export const downloadTrack = (url, outputDir, ytdlpPath) => {
+  const videoId = url?.id;
+  const files = fs.readdirSync(tempDir);
+  const checkFilePath = files
+    .map((f) => path.join(tempDir, f))
+    .find((f) => path.basename(f).startsWith(videoId + "."));
+
+  if (fs.existsSync(checkFilePath)) {
+    const safeTitle = sanitizeFileName(url.title || videoId);
+    const finalFileName = `${safeTitle}.mp3`;
+    const outputFilePath = path.join(outputDir, finalFileName);
+    return fs.copyFileSync(checkFilePath, outputFilePath);
+  }
+  return new Promise((resolve, reject) => {
+    const args = [
+      "-x",
+      "--audio-format",
+      "best",
+      "-o",
+      path.join(outputDir, "%(title)s.%(ext)s"),
+      `https://www.youtube.com/watch?v=${videoId}`,
+    ];
+
+    const process = spawn(ytdlpPath, args);
+
+    process.stdout.on("data", (data) => {
+      console.log(data.toString());
+    });
+
+    process.stderr.on("data", (data) => {
+      console.error(data.toString());
+    });
+
+    process.on("close", (code) => {
+      if (code === 0) resolve("Download completed!");
+      else reject(`Download failed wih code ${code}`);
+    });
+  });
+};
+
+
+
+================
+File: Desktop/electron/fs.js
+================
+
+import fs from "fs";
+import path from "path";
+
+export function getCacheFile(cacheDir, videoId) {
+  return path.join(cacheDir, `${videoId}.webm`);
+}
+
+export function isCached(cacheDir, videoId) {
+  return fs.existsSync(getCacheFile(cacheDir, videoId));
+}
+
+
+
+================
+File: Desktop/electron/logic/player.js
+================
+
+
+
+
+================
+File: Desktop/electron/logic/playlist.js
+================
+
+import fs from "fs";
+import path from "path";
+
+export const downloads = (musicPath) => {
+  if (!fs.existsSync(musicPath)) {
+    console.error("Music path does not exist:", musicPath);
+    return [];
+  }
+
+  const files = fs.readdirSync(musicPath);
+
+  const filesFilted = files.filter(
+    (file) =>
+      file.endsWith(".webm") || file.endsWith(".opus") || file.endsWith(".mp3")
+  );
+
+  const musicObject = filesFilted.map((file) => ({
+    id: file,
+    title: path.parse(file).name,
+    source: "local",
+    path: path.join(musicPath, file),
+    thumbnails: null,
+  }));
+  return musicObject;
+};
+
+
+
+================
+File: Desktop/electron/main.js
+================
+
+import { app, BrowserWindow } from "electron";
+import path from "path";
+import fs from "fs";
+import { spawn } from "child_process";
+import { ipcMain } from "electron";
+import { downloadTrack } from "./download.js";
+import { fileURLToPath } from "url";
+import dotenv from "dotenv";
+import { searchYouTube } from "./search.js";
+import { startServer } from "./server.js";
+import { downloads } from "./logic/playlist.js";
+import os from "os";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+function getYtDlpPath() {
+  const platform = os.platform();
+
+  if (app.isPackaged) {
+    return path.join(
+      process.resourcesPath,
+      "bin",
+      platform === "win32"
+        ? "yt-dlp.exe"
+        : platform === "darwin"
+          ? "yt-dlp_macos"
+          : "yt-dlp_linux",
+    );
+  } else {
+    return path.join(
+      __dirname,
+      "bin",
+      platform === "win32"
+        ? "yt-dlp.exe"
+        : platform === "darwin"
+          ? "yt-dlp_macos"
+          : "yt-dlp_linux",
+    );
+  }
+}
+
+const ytDlpPath = getYtDlpPath();
+const checkForUpdates = async () => {
+  return new Promise((resolve, reject) => {
+    const process = spawn(ytDlpPath, ["-U"]);
+    process.stdout.on("data", (data) => {
+      console.log(data.toString());
+    });
+    process.stderr.on("data", (data) => {
+      console.error(data.toString());
+    });
+
+    process.on("error", reject);
+
+    process.on("close", (code) => {
+      resolve(code);
+    });
+  });
+};
+
+let win;
+let frontend;
+let server;
+
+const envPath = path.join(__dirname, ".env");
+
+dotenv.config({ path: envPath });
+
+function createWindow() {
+  win = new BrowserWindow({
+    width: 1200,
+    height: 800,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js"),
+      nodeIntegration: false,
+      contextIsolation: true,
+    },
+  });
+  const isProd = app.isPackaged;
+
+  const buildPath = isProd
+    ? path.join(process.resourcesPath, "frontend/dist/index.html")
+    : path.join(__dirname, "../Frontend/dist/index.html");
+
+  if (!isProd && !fs.existsSync(buildPath)) {
+    frontend = spawn("npm", ["run", "dev"], {
+      cwd: path.join(__dirname, "../Frontend"),
+    });
+
+    frontend.stdout.on("data", (data) => {
+      process.stdout.write(`Frontend: ${data}`);
+      const str = data.toString();
+      if (str.includes("ready")) {
+        win.loadURL("http://localhost:5173");
+      }
+    });
+  } else {
+    win.loadFile(buildPath);
+  }
+}
+
+app.whenReady().then(async () => {
+  createWindow();
+  await checkForUpdates();
+  server = startServer(ytDlpPath);
+  const files = fs.readdirSync(tempDir);
+  console.log(files)
+});
+
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
+    if (frontend) frontend.kill();
+    app.quit();
+  }
+  if (server) server.close();
+  if (process.platform !== "darwin") {
+    app.quit();
+  }
+});
+
+const baseDir = app.getPath("music");
+
+const outputPath = path.join(baseDir, "Musicyc");
+
+if (!fs.existsSync(outputPath)) fs.mkdirSync(outputPath, { recursive: true });
+export const tempDir = path.join(outputPath, ".cache");
+if (!fs.existsSync(tempDir)) {
+  fs.mkdirSync(tempDir, { recursive: true });
+}
+
+ipcMain.handle("download-track", async (_, url) => {
+  return await downloadTrack(url, outputPath, ytDlpPath);
+});
+
+ipcMain.handle("search-youtube", async (_, query) => {
+  try {
+    return await searchYouTube(query);
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+});
+
+ipcMain.handle("current-download", async (_) => {
+  return await downloads(outputPath);
+});
+
+
+
+
+================
+File: Desktop/electron/new.js
+================
+
+
+
+
+================
+File: Desktop/electron/package.json
+================
+
+{
+  "name": "musicyc",
+  "version": "1.0.4",
+  "description": "A free music streaming and downloading app",
+  "main": "main.js",
+  "type": "module",
+  "homepage": "https://github.com/Cyclonekillzyt/Musicyc-electron.git",
+  "author": {
+    "name": "Cyclone Kendricks",
+    "email": "kendrickscyclone@gmail.com"
+  },
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "build": {
+    "appId": "com.example.musicyc",
+    "productName": "Musicyc",
+    "directories": {
+      "buildResources": "assets",
+      "output": "dist_electron"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "package.json",
+      "context.js",
+      "server.js",
+      "download.js",
+      "stream.js",
+      "search.js",
+      "logic/**/*",
+      ".env"
+    ],
+    "extraResources": [
+      {
+        "from": "bin",
+        "to": "bin"
+      },
+      {
+        "from": "../Frontend/dist",
+        "to": "frontend/dist"
+      }
+    ],
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "zip"
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    }
+  },
+  "devDependencies": {
+    "electron": "^39.2.7",
+    "electron-builder": "^24.6.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "googleapis": "^169.0.0"
+  }
+}
+
+
+
+================
+File: Desktop/electron/preload.js
+================
+
+const { contextBridge, ipcRenderer } = require("electron");
+console.log("✅ Preload loaded");
+
+contextBridge.exposeInMainWorld("electronAPI", {
+  sendMessage: (msg) => ipcRenderer.send("message", msg),
+  onMessage: (callback) => ipcRenderer.on("message", callback),
+  downloadTrack: (url) => ipcRenderer.invoke("download-track", url),
+  searchYoutube: (query) => ipcRenderer.invoke("search-youtube", query),
+  getPlaylist: () => ipcRenderer.invoke("current-download"),
+});
+
+
+
+================
+File: Desktop/electron/search.js
+================
+
+import { google } from "googleapis";
+const youtube = google.youtube({ version: "v3", key: process.env.YT });
+
+export const searchYouTube = async (query) => {
+  if (!query) {
+    throw new Error("Query parameter is required");
+  }
+
+  const res = await youtube.search.list({
+    key: process.env.YT,
+    part: "snippet",
+    q: `${query} song`,
+    maxResults: 100,
+    type: "video",
+    videoCategoryId: "10",
+  });
+  return res.data.items
+    .filter((item) => item.id.kind === "youtube#video")
+    .map((item) => ({
+      id: item.id.videoId,
+      title: item.snippet.title,
+      source: "stream",
+      videoId: item.id.videoId,
+      channel: item.snippet.channelTitle,
+      thumbnails: item.snippet.thumbnails,
+    }));
+};
+
+
+
+================
+File: Desktop/electron/server.js
+================
+
+import http from "http";
+import { streamAudio } from "./stream.js";
+
+export function startServer(ytDlpPath, port = 3333) {
+  const server = http.createServer((req, res) => {
+    if (!req.url.startsWith("/stream")) {
+      res.writeHead(404);
+      return res.end("Not Found");
+    }
+
+    const url = new URL(req.url, "http://localhost");
+    req.query = Object.fromEntries(url.searchParams);
+
+    if (!req.query.videoId) {
+      res.writeHead(400);
+      return res.end("Bad Request: Missing videoId");
+    }
+
+    streamAudio(req, res, ytDlpPath).catch((err) => {
+      console.error(err);
+      res.writeHead(500);
+      res.end("Server Error");
+    });
+  });
+  server.listen(port, () =>
+    console.log(`Server running on http://localhost:${port}`),
+  );
+
+  server.on("error", (err) => {
+    if (err.code === "EADDRINUSE") {
+      console.warn(`Port: ${port} in use , trying port ${port + 1}...`);
+      startServer(ytDlpPath, port + 1);
+    } else {
+      console.error("Server error:", err);
+    }
+  });
+  return server;
+}
+
+
+
+================
+File: Desktop/electron/stream.js
+================
+
+import { spawn } from "child_process";
+import fs from "fs";
+import { tempDir } from "./main.js";
+import path from "path";
+
+const activeDownloads = new Map();
+
+export async function streamAudio(req, res, ytdlpPath) {
+  if (!fs.existsSync(ytdlpPath)) {
+    console.error("YTDLP binary not found at:", ytdlpPath);
+  }
+
+  const { videoId } = req.query;
+
+  if (!videoId) {
+    res.writeHead(400);
+    return res.end("Missing videoId");
+  }
+
+  const outputPath = path.join(tempDir, videoId);
+
+  let existingFile = findDownloadedFile(videoId);
+
+  if (!existingFile) {
+    if (activeDownloads.has(videoId)) {
+      await activeDownloads.get(videoId);
+    } else {
+      const downloadPromise = startDownload(videoId, outputPath, ytdlpPath);
+      activeDownloads.set(videoId, downloadPromise);
+      await downloadPromise;
+    }
+
+    existingFile = findDownloadedFile(videoId);
+  }
+
+  if (!existingFile) {
+    res.writeHead(500);
+    return res.end("Download failed");
+  }
+
+  serveFile(req, res, existingFile);
+}
+
+function findDownloadedFile(videoId) {
+  const files = fs.readdirSync(tempDir);
+  const match = files.find((f) => f.startsWith(videoId + "."));
+  return match ? path.join(tempDir, match) : null;
+}
+
+function startDownload(videoId, outputPath, ytdlpPath) {
+  return new Promise((resolve, reject) => {
+    const ytdlp = spawn(ytdlpPath, [
+      "-f",
+      "251/bestaudio/best",
+      "--no-playlist",
+      "-o",
+      `${outputPath}.%(ext)s`,
+      `https://www.youtube.com/watch?v=${videoId}`,
+    ]);
+
+    activeDownloads.set(videoId, ytdlp);
+
+    ytdlp.stdout.on("data", (data) => {
+      console.log(data.toString());
+    });
+
+    ytdlp.stderr.on("data", (data) => {
+      console.log(data.toString());
+    });
+
+    ytdlp.on("close", (code) => {
+      activeDownloads.delete(videoId);
+      if (code === 0) {
+        console.log("Download finished:", videoId);
+        resolve();
+      } else {
+        reject(new Error(`yt-dlp exited with code ${code}`));
+      }
+    });
+  });
+}
+
+function serveFile(req, res, filePath) {
+  const stat = fs.statSync(filePath);
+  const fileSize = stat.size;
+  const range = req.headers.range;
+
+  const ext = path.extname(filePath);
+  const mime =
+    ext === ".webm" ? "audio/webm" : ext === ".m4a" ? "audio/mp4" : "audio/ogg";
+
+  if (range) {
+    const parts = range.replace(/bytes=/, "").split("-");
+    const start = parseInt(parts[0], 10);
+    const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+    const chunkSize = end - start + 1;
+
+    const stream = fs.createReadStream(filePath, { start, end });
+
+    res.writeHead(206, {
+      "Content-Range": `bytes ${start}-${end}/${fileSize}`,
+      "Accept-Ranges": "bytes",
+      "Content-Length": chunkSize,
+      "Content-Type": mime,
+    });
+
+    stream.pipe(res);
+  } else {
+    res.writeHead(200, {
+      "Content-Length": fileSize,
+      "Content-Type": mime,
+    });
+
+    fs.createReadStream(filePath).pipe(res);
+    console.log(filePath);
+  }
+}
+
+
+

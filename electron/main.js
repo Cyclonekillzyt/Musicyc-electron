@@ -11,6 +11,8 @@ import { startServer } from "./server.js";
 import { downloads } from "./logic/playlist.js";
 import os from "os";
 
+app.disableHardwareAcceleration();
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -41,6 +43,7 @@ function getYtDlpPath() {
 }
 
 const ytDlpPath = getYtDlpPath();
+
 const checkForUpdates = async () => {
   return new Promise((resolve, reject) => {
     const process = spawn(ytDlpPath, ["-U"]);
@@ -64,13 +67,27 @@ let frontend;
 let server;
 
 const envPath = path.join(__dirname, ".env");
-
 dotenv.config({ path: envPath });
+
+const baseDir = app.getPath("music");
+const outputPath = path.join(baseDir, "Musicyc");
+
+if (!fs.existsSync(outputPath)) fs.mkdirSync(outputPath, { recursive: true });
+export const tempDir = path.join(outputPath, ".cache");
+if (!fs.existsSync(tempDir)) {
+  fs.mkdirSync(tempDir, { recursive: true });
+}
 
 function createWindow() {
   win = new BrowserWindow({
     width: 1200,
     height: 800,
+
+    minWidth: 220,
+    minHeight: 260,
+
+    frame: false,
+    backgroundColor: "#150e0b",
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: false,
@@ -104,30 +121,15 @@ app.whenReady().then(async () => {
   createWindow();
   await checkForUpdates();
   server = startServer(ytDlpPath);
-  const files = fs.readdirSync(tempDir);
-  console.log(files)
 });
 
 app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    if (frontend) frontend.kill();
-    app.quit();
-  }
+  if (frontend) frontend.kill();
   if (server) server.close();
   if (process.platform !== "darwin") {
     app.quit();
   }
 });
-
-const baseDir = app.getPath("music");
-
-const outputPath = path.join(baseDir, "Musicyc");
-
-if (!fs.existsSync(outputPath)) fs.mkdirSync(outputPath, { recursive: true });
-export const tempDir = path.join(outputPath, ".cache");
-if (!fs.existsSync(tempDir)) {
-  fs.mkdirSync(tempDir, { recursive: true });
-}
 
 ipcMain.handle("download-track", async (_, url) => {
   return await downloadTrack(url, outputPath, ytDlpPath);
@@ -146,3 +148,10 @@ ipcMain.handle("current-download", async (_) => {
   return await downloads(outputPath);
 });
 
+ipcMain.on("window-minimize", () => {
+  if (win) win.minimize();
+});
+
+ipcMain.on("window-close", () => {
+  if (win) win.close();
+});

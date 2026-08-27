@@ -1,6 +1,6 @@
 {
   "name": "musicyc",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "A free music streaming and downloading app",
   "main": "main.js",
   "type": "module",
@@ -62,11 +62,11 @@
     }
   },
   "devDependencies": {
-    "electron": "^39.2.7",
-    "electron-builder": "^24.6.0"
+    "electron": "^44.0.0",
+    "electron-builder": "^26.15.3"
   },
   "dependencies": {
-    "dotenv": "^17.2.3",
-    "googleapis": "^169.0.0"
+    "dotenv": "^17.4.2",
+    "googleapis": "^176.0.0"
   }
 }

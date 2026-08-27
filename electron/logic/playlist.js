@@ -11,7 +11,7 @@ export const downloads = (musicPath) => {
 
   const filesFilted = files.filter(
     (file) =>
-      file.endsWith(".webm") || file.endsWith(".opus") || file.endsWith(".mp3")
+      file.endsWith(".webm") || file.endsWith(".opus") || file.endsWith(".mp3"),
   );
 
   const musicObject = filesFilted.map((file) => ({
@@ -19,7 +19,7 @@ export const downloads = (musicPath) => {
     title: path.parse(file).name,
     source: "local",
     path: path.join(musicPath, file),
-    thumbnail: null,
+    thumbnails: null,
   }));
   return musicObject;
 };
