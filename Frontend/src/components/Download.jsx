@@ -1,13 +1,13 @@
-export const handleDownload = async (download) => {
+export const handleDownload = async (download, showToast) => {
   if (!download?.id) return;
   try {
     await window.electronAPI.downloadTrack(download);
-    alert("Download completed! Check your Music/Musicyc folder");
   } catch (err) {
     console.error("Download failed:", err);
-    alert("Failed to download audio. Try again.");
-  } 
+    if (showToast) {
+      showToast(
+        "Couldn't start the download — check your connection and try again.",
+      );
+    }
+  }
 };
-
-
-

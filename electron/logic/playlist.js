@@ -7,19 +7,48 @@ export const downloads = (musicPath) => {
     return [];
   }
 
+  const cachePath = path.join(musicPath, ".cache");
+
   const files = fs.readdirSync(musicPath);
 
-  const filesFilted = files.filter(
+  const audioFiles = files.filter(
     (file) =>
       file.endsWith(".webm") || file.endsWith(".opus") || file.endsWith(".mp3"),
   );
 
-  const musicObject = filesFilted.map((file) => ({
-    id: file,
-    title: path.parse(file).name,
-    source: "local",
-    path: path.join(musicPath, file),
-    thumbnails: null,
-  }));
-  return musicObject;
+  return audioFiles.map((file) => {
+    const filePath = path.join(musicPath, file);
+
+    let metadata = {};
+
+    if (fs.existsSync(cachePath)) {
+      const metadataFiles = fs
+        .readdirSync(cachePath)
+        .filter((file) => file.endsWith(".json"));
+
+      for (const metadataFile of metadataFiles) {
+        try {
+          const metadataPath = path.join(cachePath, metadataFile);
+          const data = JSON.parse(fs.readFileSync(metadataPath, "utf8"));
+
+          if (data.fileName === file) {
+            metadata = data;
+            break;
+          }
+        } catch (error) {
+          console.error(`Failed to read metadata file ${metadataFile}:`, error);
+        }
+      }
+    }
+
+    return {
+      id: metadata.id || file,
+      videoId: metadata.videoId || null,
+      title: metadata.title || path.parse(file).name,
+      channel: metadata.channel || "Unknown Artist",
+      source: "local",
+      path: filePath,
+      thumbnails: metadata.thumbnails || null,
+    };
+  });
 };

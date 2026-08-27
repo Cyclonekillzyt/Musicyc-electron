@@ -1,22 +1,72 @@
-import { DownloadIcon } from "lucide-react";
+import { useEffect } from "react";
+import { DownloadIcon, Check, X } from "lucide-react";
 import { usePlayer } from "../context/PlayerContext";
 import { handleDownload } from "./Download.jsx";
 
 const Description = ({ info }) => {
-  const { setDownload } = usePlayer();
+  const { setDownload, downloadStatus, showToast } = usePlayer();
+
   const handleClick = () => {
     if (!info) return;
     setDownload(info);
-    handleDownload(info);
+    handleDownload(info, showToast);
   };
+
+  const isThisTrack =
+    info && downloadStatus && downloadStatus.videoId === info.id;
+  const isDownloading =
+    isThisTrack && !downloadStatus.done && !downloadStatus.error;
+  const isDone = isThisTrack && downloadStatus.done;
+  const isFailed = isThisTrack && downloadStatus.error;
+
+  useEffect(() => {
+    if (isFailed) {
+      showToast(downloadStatus.error || "Download failed — try again.");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFailed, downloadStatus?.error]);
+
   return (
-    <div className="card py-4 flex justify-center items-center  text-center gap-2">
-      <h2 className="card-title">{info ? info.title : "Song Title"}</h2>
-      <p>{info ? info.channel : "Artist Name"}</p>
-      <DownloadIcon
-        className="absolute top-[30%] right-[4%] cursor-pointer hover:scale-120 hover:glass rounded-full hover:p-1"
-        onClick={handleClick}
-      />
+    <div className="flex flex-col gap-1.5 px-2">
+      <div className="relative flex items-center justify-between gap-4">
+        <div className="min-w-0">
+          <h2
+            className="truncate text-2xl"
+            style={{ fontFamily: "var(--font-display)", color: "var(--cream)" }}
+          >
+            {info ? info.title : "Nothing on the platter"}
+          </h2>
+          <p className="hifi-eyebrow truncate mt-1">
+            {info ? info.channel : "Select a track to begin"}
+          </p>
+        </div>
+
+        <button
+          type="button"
+          className="hifi-btn-round shrink-0"
+          onClick={handleClick}
+          aria-label="Download this track"
+          title="Download this track"
+          disabled={isDownloading}
+        >
+          {isDone ? (
+            <Check size={18} style={{ color: "var(--teal-bright)" }} />
+          ) : isFailed ? (
+            <X size={18} style={{ color: "var(--peak)" }} />
+          ) : (
+            <DownloadIcon size={18} />
+          )}
+        </button>
+      </div>
+
+      {isDownloading && (
+        <div className="hifi-download-bar">
+          <div
+            className="hifi-download-bar-fill"
+            style={{ width: `${Math.round(downloadStatus.progress || 0)}%` }}
+          />
+        </div>
+      )}
     </div>
   );
 };

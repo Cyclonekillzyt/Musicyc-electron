@@ -1,5 +1,1184 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Oswald:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap");
 @import "tailwindcss";
 
 @plugin "daisyui" {
-  themes: all;
+  themes: false;
+}
+@plugin "daisyui/theme" {
+  name: "hifi";
+  default: true;
+  prefersdark: false;
+  color-scheme: dark;
+
+  --color-base-100: #241914;
+  --color-base-200: #1c130f;
+  --color-base-300: #150e0b;
+  --color-base-content: #ede3cf;
+
+  --color-primary: #c9a24b;
+  --color-primary-content: #1c130f;
+
+  --color-secondary: #2f6e68;
+  --color-secondary-content: #ede3cf;
+
+  --color-accent: #6fe0d2;
+  --color-accent-content: #12312d;
+
+  --color-neutral: #150e0b;
+  --color-neutral-content: #ede3cf;
+
+  --color-info: #6fe0d2;
+  --color-success: #7fa563;
+  --color-warning: #d99a4e;
+  --color-error: #b3492f;
+
+  --radius-selector: 0.35rem;
+  --radius-field: 0.6rem;
+  --radius-box: 0.9rem;
+  --border: 1.5px;
+  --depth: 1;
+  --noise: 0;
+}
+
+:root {
+  --cabinet: #241914;
+  --cabinet-dark: #150e0b;
+  --cabinet-light: #3a281d;
+  --veneer-line: rgba(0, 0, 0, 0.35);
+  --brass: #c9a24b;
+  --brass-bright: #e8cd85;
+  --brass-dark: #7d6132;
+  --teal: #2f6e68;
+  --teal-bright: #6fe0d2;
+  --cream: #ede3cf;
+  --peak: #c1512d;
+
+  --font-display: "Fraunces", "Iowan Old Style", serif;
+  --font-label: "Oswald", "Arial Narrow", sans-serif;
+  --font-mono: "Space Mono", "Courier New", monospace;
+}
+
+* {
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.2s ease;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-label);
+  color: var(--cream);
+  background: var(--cabinet-dark);
+}
+
+::selection {
+  background: var(--teal);
+  color: var(--cream);
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--teal-bright);
+  outline-offset: 2px;
+}
+
+.hifi-shell {
+  background:
+    radial-gradient(120% 140% at 50% -10%, #3a281d 0%, transparent 55%),
+    repeating-linear-gradient(
+      100deg,
+      rgba(0, 0, 0, 0.15) 0px,
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 5px
+    ),
+    linear-gradient(160deg, #26190f 0%, #180f0a 60%, #120b08 100%);
+  position: relative;
+}
+
+.hifi-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 140px rgba(0, 0, 0, 0.65);
+}
+
+.hifi-panel {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.25)),
+    linear-gradient(135deg, #2a1c14, #1c130d 70%);
+  border: 1px solid var(--brass-dark);
+  border-radius: 1.25rem;
+  box-shadow:
+    0 20px 45px -15px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.hifi-screw {
+  position: absolute;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle at 35% 30%,
+    var(--brass-bright),
+    var(--brass-dark) 70%
+  );
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.4);
+}
+.hifi-screw::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 65%;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.55);
+  transform: rotate(35deg);
+}
+.hifi-screw-tl {
+  top: 0.7rem;
+  left: 0.7rem;
+}
+.hifi-screw-tr {
+  top: 0.7rem;
+  right: 0.7rem;
+}
+.hifi-screw-bl {
+  bottom: 0.7rem;
+  left: 0.7rem;
+}
+.hifi-screw-br {
+  bottom: 0.7rem;
+  right: 0.7rem;
+}
+
+/* ---------------------------------------------------- */
+/* Wordmark */
+/* ---------------------------------------------------- */
+.hifi-wordmark {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--brass-bright);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+}
+
+.hifi-eyebrow {
+  font-family: var(--font-label);
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  font-size: 0.65rem;
+  color: var(--teal-bright);
+  opacity: 0.85;
+}
+
+/* ---------------------------------------------------- */
+/* Buffering state — shimmering slider + spinner on play */
+/* ---------------------------------------------------- */
+.hifi-range.is-buffering {
+  background: linear-gradient(
+    90deg,
+    rgba(111, 224, 210, 0.12) 25%,
+    rgba(111, 224, 210, 0.35) 50%,
+    rgba(111, 224, 210, 0.12) 75%
+  );
+  background-size: 200% 100%;
+  animation: hifi-range-shimmer 1.3s ease-in-out infinite;
+  cursor: wait;
+}
+
+.hifi-range.is-buffering::-webkit-slider-thumb {
+  opacity: 0;
+}
+.hifi-range.is-buffering::-moz-range-thumb {
+  opacity: 0;
+}
+
+@keyframes hifi-range-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.hifi-spinner {
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 9999px;
+  border: 2px solid rgba(21, 14, 11, 0.35);
+  border-top-color: var(--cabinet-dark);
+  animation: hifi-spinner-spin 0.7s linear infinite;
+}
+
+@keyframes hifi-spinner-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hifi-range.is-buffering {
+    animation: none !important;
+    background: rgba(111, 224, 210, 0.2);
+  }
+  .hifi-spinner {
+    animation: none !important;
+  }
+}
+
+/* ---------------------------------------------------- */
+/* Turntable / vinyl (signature element) */
+/* ---------------------------------------------------- */
+.hifi-turntable {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 42%, #1c1512 0%, #0e0a08 70%);
+  border-radius: 0.85rem;
+  overflow: hidden;
+}
+
+.hifi-turntable::before {
+  /* brushed metal platter ring */
+  content: "";
+  position: absolute;
+  width: 88%;
+  aspect-ratio: 1 / 1;
+  border-radius: 9999px;
+  background: repeating-radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 255, 255, 0.05) 0px,
+    rgba(255, 255, 255, 0.05) 1px,
+    transparent 2px,
+    transparent 4px
+  );
+  box-shadow:
+    0 0 0 6px rgba(0, 0, 0, 0.4),
+    0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.hifi-record {
+  position: relative;
+  width: 78%;
+  aspect-ratio: 1 / 1;
+  border-radius: 9999px;
+  background: repeating-radial-gradient(
+    circle at 50% 50%,
+    #0a0a0a 0px,
+    #0a0a0a 2px,
+    #161616 3px,
+    #0a0a0a 4px
+  );
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.6),
+    0 14px 26px rgba(0, 0, 0, 0.55);
+  animation: hifi-spin 3.2s linear infinite;
+  animation-play-state: paused;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hifi-record.is-playing {
+  animation-play-state: running;
+}
+
+.hifi-record-label {
+  width: 40%;
+  aspect-ratio: 1 / 1;
+  border-radius: 9999px;
+  overflow: hidden;
+  border: 2px solid var(--brass);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.5),
+    inset 0 0 12px rgba(0, 0, 0, 0.5);
+}
+
+.hifi-record-label img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hifi-spindle {
+  position: absolute;
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle at 35% 30%,
+    var(--brass-bright),
+    var(--brass-dark)
+  );
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6);
+  z-index: 2;
+}
+
+.hifi-tonearm {
+  position: absolute;
+  top: 4%;
+  right: 6%;
+  width: 46%;
+  height: 46%;
+  transform-origin: 92% 8%;
+  transform: rotate(-32deg);
+  z-index: 3;
+  pointer-events: none;
+}
+
+.hifi-tonearm.is-playing {
+  transform: rotate(-6deg);
+}
+
+.hifi-tonearm-body {
+  position: absolute;
+  top: 6%;
+  right: 4%;
+  width: 6px;
+  height: 88%;
+  border-radius: 6px;
+  background: linear-gradient(180deg, var(--brass-bright), var(--brass-dark));
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.hifi-tonearm-pivot {
+  position: absolute;
+  top: 0;
+  right: -6px;
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle at 35% 30%,
+    var(--brass-bright),
+    var(--brass-dark)
+  );
+  box-shadow:
+    0 0 0 2px var(--cabinet-dark),
+    0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hifi-tonearm-head {
+  position: absolute;
+  bottom: -4px;
+  right: -8px;
+  width: 16px;
+  height: 10px;
+  border-radius: 3px;
+  background: linear-gradient(135deg, #2a2a2a, #111);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6);
+}
+
+@keyframes hifi-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hifi-record {
+    animation: none !important;
+  }
+  .hifi-vu-needle.is-active {
+    animation: none !important;
+  }
+  * {
+    transition: none !important;
+  }
+}
+
+/* ---------------------------------------------------- */
+/* VU meters (decorative, ambient — compact widget bars) */
+/* ---------------------------------------------------- */
+.hifi-vu {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 1.3rem;
+}
+
+.hifi-vu-bar {
+  width: 3px;
+  border-radius: 1px;
+  background: var(--teal);
+  height: 20%;
+  animation: hifi-vu-bounce 1.1s ease-in-out infinite;
+  animation-play-state: paused;
+}
+
+.hifi-vu.is-playing .hifi-vu-bar {
+  animation-play-state: running;
+}
+
+.hifi-vu-bar:nth-child(1) {
+  animation-delay: 0s;
+}
+.hifi-vu-bar:nth-child(2) {
+  animation-delay: 0.12s;
+  background: var(--teal-bright);
+}
+.hifi-vu-bar:nth-child(3) {
+  animation-delay: 0.24s;
+}
+.hifi-vu-bar:nth-child(4) {
+  animation-delay: 0.36s;
+  background: var(--peak);
+}
+.hifi-vu-bar:nth-child(5) {
+  animation-delay: 0.18s;
+}
+
+@keyframes hifi-vu-bounce {
+  0%,
+  100% {
+    height: 15%;
+  }
+  50% {
+    height: 90%;
+  }
+}
+
+/* ---------------------------------------------------- */
+/* Transport controls */
+/* ---------------------------------------------------- */
+.hifi-btn-round {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 9999px;
+  color: var(--cream);
+  background: linear-gradient(180deg, #3a281d, #211610);
+  border: 1px solid var(--brass-dark);
+  box-shadow:
+    0 3px 0 rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+}
+
+.hifi-btn-round:hover {
+  color: var(--brass-bright);
+  border-color: var(--brass);
+  transform: translateY(-1px);
+}
+
+.hifi-btn-round:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hifi-btn-play {
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(
+    circle at 35% 30%,
+    var(--brass-bright),
+    var(--brass) 55%,
+    var(--brass-dark) 100%
+  );
+  color: var(--cabinet-dark);
+  border: 1px solid var(--brass-dark);
+  box-shadow:
+    0 4px 0 var(--brass-dark),
+    0 10px 22px rgba(0, 0, 0, 0.5),
+    0 0 0 4px rgba(111, 224, 210, 0.08);
+  cursor: pointer;
+}
+
+.hifi-btn-play:hover {
+  box-shadow:
+    0 4px 0 var(--brass-dark),
+    0 10px 26px rgba(0, 0, 0, 0.55),
+    0 0 0 6px rgba(111, 224, 210, 0.16);
+}
+
+.hifi-btn-play:active {
+  transform: translateY(3px);
+  box-shadow: 0 0 0 var(--brass-dark);
+}
+
+.hifi-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 0.4rem;
+  color: var(--cream);
+  background: linear-gradient(180deg, #2a1c14, #180f0a);
+  border: 1px solid var(--brass-dark);
+  cursor: pointer;
+  position: relative;
+}
+
+.hifi-toggle.is-active {
+  color: var(--teal-bright);
+  border-color: var(--teal);
+  box-shadow: 0 0 8px rgba(111, 224, 210, 0.35);
+}
+
+.hifi-toggle-led {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background: var(--brass-dark);
+}
+
+.hifi-toggle.is-active .hifi-toggle-led {
+  background: var(--teal-bright);
+  box-shadow: 0 0 5px var(--teal-bright);
+}
+
+/* ---------------------------------------------------- */
+/* Tape-counter progress slider */
+/* ---------------------------------------------------- */
+.hifi-time {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--brass-bright);
+  letter-spacing: 0.03em;
+  min-width: 2.6rem;
+}
+
+.hifi-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 9999px;
+  background: linear-gradient(
+    90deg,
+    var(--teal) 0%,
+    var(--teal) var(--val, 0%),
+    rgba(0, 0, 0, 0.45) var(--val, 0%)
+  );
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.4);
+  outline: none;
+  cursor: pointer;
+}
+
+.hifi-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle at 35% 30%,
+    var(--brass-bright),
+    var(--brass-dark)
+  );
+  border: 1px solid var(--brass-dark);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.35);
+  margin-top: 0;
+}
+
+.hifi-range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle at 35% 30%,
+    var(--brass-bright),
+    var(--brass-dark)
+  );
+  border: 1px solid var(--brass-dark);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.35);
+}
+
+.hifi-range::-moz-range-track {
+  height: 6px;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+/* ---------------------------------------------------- */
+/* Tuner search input */
+/* ---------------------------------------------------- */
+.hifi-tuner {
+  background: linear-gradient(180deg, #17110c, #0f0a07);
+  border: 1px solid var(--brass-dark);
+  border-radius: 9999px;
+  color: var(--cream);
+  font-family: var(--font-label);
+  letter-spacing: 0.02em;
+}
+
+.hifi-tuner::placeholder {
+  color: rgba(237, 227, 207, 0.4);
+}
+
+.hifi-tuner:focus {
+  border-color: var(--teal-bright);
+  box-shadow: 0 0 0 3px rgba(111, 224, 210, 0.18);
+}
+
+/* ---------------------------------------------------- */
+/* Track rows (search / playlist results) */
+/* ---------------------------------------------------- */
+.hifi-row {
+  border: 1px solid transparent;
+  border-bottom: 1px solid rgba(201, 162, 75, 0.14);
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.hifi-row:hover {
+  background: rgba(111, 224, 210, 0.06);
+  border-color: rgba(111, 224, 210, 0.25);
+}
+
+.hifi-row-index {
+  font-family: var(--font-mono);
+  color: var(--brass-dark);
+  font-size: 0.72rem;
+}
+
+.hifi-row-current {
+  background: rgba(111, 224, 210, 0.08);
+  border-color: rgba(111, 224, 210, 0.3);
+}
+
+/* ---------------------------------------------------- */
+/* Download progress bar                                  */
+/* ---------------------------------------------------- */
+.hifi-download-bar {
+  width: 100%;
+  height: 3px;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+}
+
+.hifi-download-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--teal), var(--teal-bright));
+  transition: width 0.2s ease;
+}
+
+/* ---------------------------------------------------- */
+/* Custom titlebar (frameless window drag region)        */
+/* ---------------------------------------------------- */
+.hifi-titlebar {
+  -webkit-app-region: drag;
+  flex-shrink: 0;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.4rem;
+  padding: 0 0.55rem;
+  background: linear-gradient(180deg, #1c130d, #150e0b);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.45);
+}
+
+.hifi-window-btn {
+  -webkit-app-region: no-drag;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid var(--brass-dark);
+  background: radial-gradient(
+    circle at 35% 30%,
+    var(--brass-bright),
+    var(--brass-dark)
+  );
+  cursor: pointer;
+  padding: 0;
+}
+
+.hifi-window-btn.minimize:hover {
+  background: radial-gradient(
+    circle at 35% 30%,
+    var(--teal-bright),
+    var(--teal)
+  );
+}
+
+.hifi-window-btn.close:hover {
+  background: radial-gradient(circle at 35% 30%, #e08a6c, var(--peak));
+}
+
+/* ---------------------------------------------------- */
+/* Responsive: compact / mini widget window sizes         */
+/* (only applies to the compact-widget layout, i.e.       */
+/* window width below the dashboard breakpoint)           */
+/* ---------------------------------------------------- */
+.hifi-page-pad {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+/* Compact: drop the header/search bar, keep everything else */
+@media (max-height: 560px) {
+  .hifi-hide-compact {
+    display: none !important;
+  }
+  .hifi-page-pad {
+    padding-top: 0.85rem;
+    padding-bottom: 0.85rem;
+  }
+  .hifi-panel {
+    padding: 1.1rem !important;
+    gap: 0.75rem !important;
+  }
+}
+
+/* Mini: vinyl + transport only, no title/toggles/VU meter */
+@media (max-height: 380px), (max-width: 300px) {
+  .hifi-hide-mini {
+    display: none !important;
+  }
+  .hifi-page-pad {
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+  }
+  .hifi-panel {
+    padding: 0.6rem !important;
+    gap: 0.5rem !important;
+    border-radius: 0.6rem;
+  }
+  .hifi-btn-play {
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+/* ---------------------------------------------------- */
+/* Scrollbars */
+/* ---------------------------------------------------- */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--brass-dark) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--brass-dark);
+  border-radius: 9999px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ---------------------------------------------------- */
+/* Offline banner                                         */
+/* ---------------------------------------------------- */
+.hifi-offline-banner {
+  flex-shrink: 0;
+  width: 100%;
+  padding: 0.45rem 1rem;
+  text-align: center;
+  font-family: var(--font-label);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  color: var(--cream);
+  background: linear-gradient(90deg, var(--peak), #8f3a22);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+/* ---------------------------------------------------- */
+/* Toast                                                   */
+/* ---------------------------------------------------- */
+.hifi-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 1.4rem;
+  transform: translateX(-50%);
+  max-width: 90%;
+  padding: 0.65rem 1.1rem;
+  border-radius: 0.6rem;
+  background: linear-gradient(180deg, #2a1c14, #180f0a);
+  border: 1px solid var(--peak);
+  color: var(--cream);
+  font-family: var(--font-label);
+  font-size: 0.82rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+  z-index: 50;
+  animation: hifi-toast-in 0.2s ease;
+}
+
+.hifi-toast.is-info {
+  border-color: var(--teal-bright);
+}
+
+@keyframes hifi-toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* ---------------------------------------------------- */
+/* Modal (settings confirmation, etc.)                    */
+/* ---------------------------------------------------- */
+.hifi-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+  padding: 1rem;
+}
+
+.hifi-modal {
+  width: 100%;
+  max-width: 26rem;
+  background: linear-gradient(135deg, #2a1c14, #1c130d 70%);
+  border: 1px solid var(--brass-dark);
+  border-radius: 0.9rem;
+  padding: 1.4rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+}
+
+/* ====================================================== */
+/* DASHBOARD LAYOUT (large window)                         */
+/* Sidebar + top VU bar + scrollable content + now-playing  */
+/* rail, in the spirit of the walnut/brass/teal hifi theme  */
+/* ====================================================== */
+
+.hifi-dashboard {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr) 300px;
+  overflow: hidden;
+}
+
+/* ---- Sidebar ---- */
+.hifi-sidebar {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 1.1rem 0.9rem;
+  background: linear-gradient(180deg, #1c130d, #150e0b);
+  border-right: 1px solid var(--brass-dark);
+  overflow-y: auto;
+}
+
+.hifi-sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.5rem 1.5rem;
+}
+
+.hifi-sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.hifi-sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.5rem;
+  color: var(--cream);
+  opacity: 0.75;
+  font-size: 0.88rem;
+  text-decoration: none;
+  border: 1px solid transparent;
+}
+
+.hifi-sidebar-item:hover {
+  background: rgba(111, 224, 210, 0.06);
+  opacity: 1;
+}
+
+.hifi-sidebar-item.is-active {
+  background: rgba(201, 162, 75, 0.14);
+  border-color: var(--brass-dark);
+  color: var(--brass-bright);
+  opacity: 1;
+}
+
+.hifi-sidebar-footer {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(201, 162, 75, 0.14);
+}
+
+/* ---- Top bar (VU meters + search) ---- */
+.hifi-dashboard-main {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.hifi-topbar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0.85rem 1.5rem;
+  border-bottom: 1px solid rgba(201, 162, 75, 0.14);
+}
+
+.hifi-topbar-knob {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 9999px;
+  flex-shrink: 0;
+  background: radial-gradient(
+    circle at 35% 30%,
+    var(--brass-bright),
+    var(--brass-dark)
+  );
+  box-shadow:
+    0 0 0 3px rgba(0, 0, 0, 0.35),
+    0 3px 6px rgba(0, 0, 0, 0.5);
+}
+
+.hifi-topbar-search {
+  position: relative;
+  flex: 1;
+  max-width: 22rem;
+  margin-left: auto;
+}
+
+.hifi-vu-gauge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  flex-shrink: 0;
+}
+
+.hifi-vu-gauge-face {
+  width: 6.5rem;
+  background: radial-gradient(circle at 50% 30%, #123a35, #0b201d 75%);
+  border: 1px solid var(--brass-dark);
+  border-radius: 0.5rem;
+  padding: 0.2rem;
+}
+
+.hifi-vu-gauge-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: var(--teal-bright);
+  text-transform: uppercase;
+}
+
+.hifi-vu-needle {
+  transform: rotate(-40deg);
+  transition: transform 0.15s ease;
+}
+
+.hifi-vu-needle.is-active {
+  animation: hifi-vu-needle-sweep 1.6s ease-in-out infinite;
+}
+
+@keyframes hifi-vu-needle-sweep {
+  0% {
+    transform: rotate(-40deg);
+  }
+  20% {
+    transform: rotate(12deg);
+  }
+  40% {
+    transform: rotate(-15deg);
+  }
+  60% {
+    transform: rotate(28deg);
+  }
+  80% {
+    transform: rotate(-5deg);
+  }
+  100% {
+    transform: rotate(-40deg);
+  }
+}
+
+/* ---- Scrollable main content ---- */
+.hifi-dashboard-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 1.75rem 2rem 2rem;
+}
+
+/* ---- Home hero ---- */
+.hifi-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 320px);
+  align-items: center;
+  gap: 1.5rem;
+  background:
+    radial-gradient(
+      120% 160% at 100% 0%,
+      rgba(47, 110, 104, 0.25),
+      transparent 60%
+    ),
+    linear-gradient(135deg, #2a1c14, #1c130d 70%);
+  border: 1px solid var(--brass-dark);
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow:
+    0 20px 45px -15px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+.hifi-hero-turntable {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-width: 320px;
+  justify-self: end;
+}
+
+/* ---- Recently Played grid ---- */
+.hifi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.hifi-card {
+  text-align: left;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.hifi-card-art {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 0.6rem;
+  overflow: hidden;
+  border: 1px solid var(--brass-dark);
+  background: #150e0b;
+}
+
+.hifi-card-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hifi-card-play {
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(
+    circle at 35% 30%,
+    var(--brass-bright),
+    var(--brass) 55%,
+    var(--brass-dark) 100%
+  );
+  color: var(--cabinet-dark);
+  opacity: 0;
+  transform: translateY(4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+}
+
+.hifi-card:hover .hifi-card-play {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---- Now Playing rail ---- */
+.hifi-now-playing-rail {
+  border-left: 1px solid var(--brass-dark);
+  background: linear-gradient(180deg, #1c130d, #150e0b);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.hifi-rail-turntable {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-height: 220px;
+  margin: 0 auto;
+}
+
+.hifi-rail-upnext-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  border-radius: 0.5rem;
+  background: transparent;
+  border: 1px solid transparent;
+  text-align: left;
+  cursor: pointer;
+  color: var(--cream);
+  font-size: 0.82rem;
+}
+
+.hifi-rail-upnext-item:hover {
+  background: rgba(111, 224, 210, 0.06);
+  border-color: rgba(111, 224, 210, 0.2);
+}
+
+/* Below ~1080px the rail gets tight — narrow it a bit rather than
+   letting content overflow. Dashboard mode itself only kicks in at
+   880px+ (see DASHBOARD_MIN_WIDTH in App.jsx). */
+@media (max-width: 1080px) {
+  .hifi-dashboard {
+    grid-template-columns: 200px minmax(0, 1fr) 260px;
+  }
+  .hifi-hero {
+    grid-template-columns: 1fr;
+  }
+  .hifi-hero-turntable {
+    display: none;
+  }
 }

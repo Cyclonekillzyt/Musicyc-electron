@@ -3,29 +3,31 @@ import Description from "../components/Description";
 import Header from "../components/Header";
 import Thumb from "../components/Thumb";
 import { usePlayer } from "../context/PlayerContext";
-import { useEffect } from "react";
 
 const MusicPlayer = () => {
   const { currentTrack, playAudio } = usePlayer();
   const thumb = currentTrack?.thumbnails?.high?.url ?? null;
-  
-  console.log(`currentTrack ${currentTrack}`, [currentTrack], {currentTrack});
-   useEffect(() => {
-    if (!currentTrack) return;
-    playAudio(currentTrack);
-  }, [currentTrack]);
-
 
   return (
-    <div className=" flex flex-col h-full  overflow-hidden py-10 w-[60%] ">
-      <Header />
-      <div className="card bg-base-300 border border-amber-300 w-full h-full p-8 flex flex-col gap-4">
-        <div className="card  bg-accent-content border border-amber-300 w-full h-3/4">
+    <div className="flex flex-col h-full min-h-0 w-[92%] max-w-2xl hifi-page-pad py-8">
+      <div className="hifi-hide-compact shrink-0">
+        <Header />
+      </div>
+
+      <div className="hifi-panel flex-1 min-h-0 p-6 flex flex-col gap-4">
+        <span className="hifi-screw hifi-screw-tl" />
+        <span className="hifi-screw hifi-screw-tr" />
+        <span className="hifi-screw hifi-screw-bl" />
+        <span className="hifi-screw hifi-screw-br" />
+
+        <div className="flex-1 min-h-0 w-full">
           <Thumb pic={thumb} />
         </div>
 
-        <div className="card  border border-amber-300 w-full h-1/4 flex flex-col justify-between gap-">
-          <Description info={currentTrack} />
+        <div className="shrink-0 flex flex-col gap-3">
+          <div className="hifi-hide-mini">
+            <Description info={currentTrack} />
+          </div>
           <Controls />
         </div>
       </div>

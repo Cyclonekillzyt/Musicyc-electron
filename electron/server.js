@@ -3,6 +3,7 @@ import { streamAudio } from "./stream.js";
 
 export function startServer(ytDlpPath, port = 3333) {
   const server = http.createServer((req, res) => {
+    console.log(`[server] ${req.method} ${req.url}`);
     if (!req.url.startsWith("/stream")) {
       res.writeHead(404);
       return res.end("Not Found");
